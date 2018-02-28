@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar color="secondary">
+    <ion-title>
+      {{name}}
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content (click) = "changeTodoStatus(complete)">
+      {{complete}}
+    </ion-card-content>
+  </ion-card>
+
+  <button full ion-button color="secondary" (click)="saveTodo()">Save</button>
+</ion-content>

@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar color="secondary">
+    <ion-title>
+      Lists !
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="addList()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <!--<ion-item *ngFor="let list of lists" (click)="selectList(list)">{{list.name}} </ion-item>-->
+
+    <ion-item-sliding *ngFor="let list of lists" #item>
+      <ion-item (click)="selectList(list)">
+        {{list.name}}
+      </ion-item>
+      <ion-item-options side="left">
+        <button ion-button>Favorite</button>
+        <button ion-button color="danger" (click)="remove(list)">REMOVE</button>
+      </ion-item-options>
+
+      <ion-item-options side="right">
+        <button ion-button (click)="share(list)">SHARE</button>
+        <button ion-button (click)="edit(list)">EDIT</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-navbar color="secondary">
+    <ion-title>
+      Todos!
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="addTodo()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let todo of todos" (click)="viewTodo(todo)">{{todo.name}}</ion-item>
+  </ion-list>
+</ion-content>
