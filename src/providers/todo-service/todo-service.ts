@@ -69,6 +69,16 @@ export class TodoServiceProvider {
   public editTodo(listUuid : String, editedItem: TodoItem, userUuid: string) {
     this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
   }
+  public editTodoList(listUuid: String,editedList:TodoList,userUuid: String){
+    this.db.object(`/${userUuid}/lists/${listUuid}`).set(editedList);//a voir avec firebase
+
+  }
+  public removeTodoList(listUuid: String,userUuid: String){
+    this.db.object(`/${userUuid}/lists/${listUuid}`).remove();//a voir avec firebase
+  }
+  public removeTodo(listUuid : String, todoUuid:String, userUuid: string) {
+    this.db.object(`/${userUuid}/lists/${listUuid}/items/${todoUuid}`).remove();
+  }
 
   uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
