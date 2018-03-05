@@ -108,7 +108,9 @@ export class AuthPage {
     this.authProvider.loginGoogle().then(
       (result) => {
         this.accessGranted(result.user.uid);
+        console.log(result);
       }).catch((error) => {
+
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as firebase from "firebase/app";
 import {AngularFireAuth} from "angularfire2/auth";
 
@@ -12,7 +12,7 @@ import {AngularFireAuth} from "angularfire2/auth";
 @Injectable()
 export class AuthServiceProvider {
 
-  constructor(public afAuth: AngularFireAuth, ) {
+  constructor(public afAuth: AngularFireAuth,) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
@@ -20,12 +20,12 @@ export class AuthServiceProvider {
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then( newUser => {
+      .then(newUser => {
         firebase
           .database()
-          .ref('/userProfile')
+          .ref('/users')
           .child(newUser.uid)
-          .set({ email: email });
+          .set({email: email});
       });
   }
 
@@ -47,9 +47,19 @@ export class AuthServiceProvider {
     return firebase.auth().sendPasswordResetEmail(email);
   }
 
-  loginGoogle() {
-    return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-
+  loginGoogle(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
+        firebase
+          .database()
+          .ref('/users')
+          .child(result.user.uid)
+          .set({email: result.user.email});
+          resolve(result);
+      }).catch((err) =>{
+          reject(err)
+      });
+    });
   }
 
   logoutUser(): Promise<void> {

@@ -18,25 +18,28 @@ import {TodosPage} from "../todos/todos";
   templateUrl: 'lists.html',
 })
 export class ListsPage {
-  lists: any;
+  listsIds: any;
   userUuid: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams
   , public todoService : TodoServiceProvider, public modalCtrl:ModalController
               ,public events :Events) {
     this.userUuid = navParams.data.userUuid;
-     this.todoService.getTodoLists(this.userUuid).subscribe((lists : AngularFireList<any>) => {
-      this.lists = lists;
-    });
-  }
+     this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds : AngularFireList<any>) => {
+      this.listsIds = listsIds;
 
+      for(let listId in this.listsIds) {
+
+      }
+    });
+
+  }
 
   ionViewDidLoad(){
   }
 
   selectList(list) {
     this.navCtrl.push('TodosPage',{listUuid:list.uuid,userUuid:this.userUuid});
-
   }
 
   addList() {

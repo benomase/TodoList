@@ -31,7 +31,7 @@ export class TodosPage {
     this.listUuid = this.navParams.data.listUuid;
     this.userUuid = this.navParams.data.userUuid;
 
-    this.todoService.getTodos(this.listUuid,this.userUuid).subscribe((todos : AngularFireList<any>) => {
+    this.todoService.getTodos(this.listUuid).subscribe((todos : AngularFireList<any>) => {
       this.todos = todos;
     });
   }
@@ -55,7 +55,7 @@ export class TodosPage {
   }
 
   saveTodo(todo) {
-    this.todoService.addTodo(this.listUuid,todo,this.userUuid);
+    this.todoService.addTodo(this.listUuid,todo);
   }
 
   editTodo(todo) {

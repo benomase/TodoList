@@ -21,28 +21,53 @@ export class TodoServiceProvider {
   constructor(public db : AngularFireDatabase) {
   }
 
-  public getTodoLists(userUuid: string): Observable<any> {
+  public getTodoListsIds(userUuid: string): Observable<any> {
     return this.db.list(`/${userUuid}/lists/`).valueChanges();
   }
 
-  public addTodoList(list : TodoList, userUuid: string) {
-    let ref = this.db.list(`/${userUuid}/lists`).push({});
+  /**
+   * ADD LIST ID TO USER
+   */
+  public addTodoListId(listUuid: string,userUuid: string) {
+    this.db.object(`/users/${userUuid}/lists/${listUuid}`).set("");
+  }
+
+  /**
+   * ADD LIST TO LISTS
+   */
+  public addTodoListObject(list : TodoList) {
+    let ref = this.db.list(`/lists`).push({});
     list.uuid = ref.key;
     ref.set(list);
+    return ref.key;
   }
 
-  public getTodos(uuid:string, userUuid: string) : Observable<any> {
-    return this.db.list(`/${userUuid}/lists/${uuid}/items`).valueChanges();
+  /**
+   * ADD LIST (MAIN)
+   * @param {TodoList} list
+   * @param {string} userUuid
+   */
+  public addTodoList(list : TodoList, userUuid: string) {
+    let listUuid = this.addTodoListObject(list);
+    this.addTodoListId(listUuid,userUuid);
   }
 
-  public addTodo(listUuid : string, newItem: TodoItem, userUuid: string) {
-    let ref = this.db.list(`/${userUuid}/lists/${listUuid}/items`).push({});
+  public getTodos(listUuid:string) : Observable<any> {
+    return this.db.list(`/lists/${listUuid}/items`).valueChanges();
+  }
+
+  /**
+   * Add funciton
+   */
+
+  public addTodo(listUuid : string, newItem: TodoItem) {
+    let ref = this.db.list(`/lists/${listUuid}/items`).push({});
     newItem.uuid = ref.key;
     ref.set(newItem);
   }
 
   public editTodo(listUuid : String, editedItem: TodoItem, userUuid: string) {
-    this.db.object(`/${userUuid}/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
+    this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
   }
 
   uuidv4() {
