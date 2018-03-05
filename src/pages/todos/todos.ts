@@ -75,20 +75,20 @@ export class TodosPage {
 
     deleteTodo(todo) {
       let alert = this.alertCtrl.create({
-        title: 'Confirm purchase',
-        message: 'Do you want to buy this book?',
+        title: 'Confirmation de suppression',
+        message: 'Voulez vous vraiment supprimer cet Item?',
         buttons: [
           {
-            text: 'Cancel',
-            role: 'cancel',
+            text: 'Annuler',
             handler: () => {
-              console.log('Cancel clicked');
+              console.log('suppression annuler');
             }
           },
           {
-            text: 'Buy',
+            text: 'Confirmer',
             handler: () => {
-              console.log('Buy clicked');
+              console.log('Confirmer');
+              this.todoService.removeTodo(this.listUuid,todo.uuid, this.userUuid)
             }
           }
         ]

@@ -51,6 +51,9 @@ export class TodoServiceProvider {
   public removeTodoList(listUuid: String,userUuid: String){
     this.db.object(`/${userUuid}/lists/${listUuid}`).remove();//a voir avec firebase
   }
+  public removeTodo(listUuid : String, todoUuid:String, userUuid: string) {
+    this.db.object(`/${userUuid}/lists/${listUuid}/items/${todoUuid}`).remove();
+  }
 
   uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
