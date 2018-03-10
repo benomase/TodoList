@@ -26,7 +26,12 @@ export class TodoServiceProvider {
   public getTodoListsIds(userUuid: string): Observable<any> {
     return this.db.list(`/${userUuid}/lists/`).valueChanges();
   }
-
+  public getTodoMyLists(){
+  //TODO
+  }
+  public getTodoSharedLists(){
+    //TODO
+  }
   /**
    * ADD LIST ID TO USER
    */
