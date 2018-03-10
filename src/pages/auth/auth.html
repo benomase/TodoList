@@ -1,17 +1,42 @@
-<ion-header>
-  <!-- <ion-navbar color="primary">
-    <ion-title>Authentication Page</ion-title>
-  </ion-navbar> -->
-
+<ion-header *ngIf="getState() | async as user; else showLogin" >
+    <ion-navbar color="navBar"  >
+        <ion-buttons end >
+          <button ion-button icon-only icon-left  (click)="logout()">
+            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+            Logout
+          </button>
+        </ion-buttons>
+      </ion-navbar>
 </ion-header>
 
 <ion-content center text-center padding >
        <ion-img width="100" height="100" src="assets/imgs/imag.jpg"></ion-img>
-    
-  <div *ngIf="getState() | async as user; else showLogin">
-    <h1>Hello {{ user.displayName }}!</h1>
-    <button (click)="logout()">Logout</button>
-  </div>
+       <div *ngIf="getState() | async as user; else showLogin">
+          <h1>Hello {{ user.displayName }} !</h1>
+          <!-- <button (click)="logout()">Logout</button> -->
+          <button ion-button full outline icon-left (click)="accessToMyTodoList()">
+              <ion-icon ios="ios-list" md="md-list"></ion-icon>
+              Access To My Todo List
+            </button>
+         
+      
+        <ion-list>
+          <ion-list-header>
+              Setting
+          </ion-list-header>
+      
+          <ion-item>
+            <ion-label>Mode Hors Ligne</ion-label>
+            <ion-toggle value="foo" checked="true"></ion-toggle>
+          </ion-item>
+      
+           <ion-item>
+            <ion-label>Get Shared List</ion-label>
+            <ion-toggle color="danger" checked="true"></ion-toggle>
+          </ion-item>
+        </ion-list>
+        </div>
+
   <ng-template #showLogin>
     <form [formGroup]="loginForm" (submit)="loginUser()" novalidate>
       <ion-item>
@@ -37,12 +62,12 @@
     <ion-row>
       <ion-col col-6>
         <button ion-button block clear (click)="goToSignup()">
-                Create a new account
+                Sign up
         </button>
       </ion-col>
       <ion-col col-6>
         <button ion-button block clear (click)="goToResetPassword()">
-            I forgot my password
+            Reset password
       </button>
       </ion-col>
     </ion-row>

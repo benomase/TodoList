@@ -17,10 +17,12 @@ export class TodoServiceProvider {
   dataList: AngularFireList<any>;
   data: Observable<any[]>;
 
-
   constructor(public db : AngularFireDatabase) {
   }
-
+  /**
+   * GET TODO LISTS ID
+   * @param {String} userUuid 
+   */
   public getTodoListsIds(userUuid: string): Observable<any> {
     return this.db.list(`/${userUuid}/lists/`).valueChanges();
   }
