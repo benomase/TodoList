@@ -1,14 +1,84 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+       Home
     </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only icon-left >
+        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+        Log-out
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content padding >
+ 
+      <button ion-button full outline icon-left (click)="accessToMyTodoList()">
+        <ion-icon ios="ios-list" md="md-list"></ion-icon>
+        Access To My Todo List
+      </button>
+   
+
+       <ion-list>
+    <ion-list-header>
+       Setting
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Mode Hors Ligne</ion-label>
+      <ion-toggle value="foo" checked="true"></ion-toggle>
+    </ion-item>
+
+     <ion-item>
+      <ion-label>Get Shared List</ion-label>
+      <ion-toggle color="danger" checked="true"></ion-toggle>
+    </ion-item>
+
+    <!-- <ion-item>
+      <ion-label>Legolas</ion-label>
+      <ion-toggle color="royal" checked="true"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Gimli</ion-label>
+      <ion-toggle color="danger"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Saruman</ion-label>
+      <ion-toggle color="dark" checked="true"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Gandalf</ion-label>
+      <ion-toggle color="energized" checked="true"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Arwen</ion-label>
+      <ion-toggle color="royal"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Treebeard</ion-label>
+      <ion-toggle color="secondary" checked="true"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Boromir</ion-label>
+      <ion-toggle color="royal"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Gollum</ion-label>
+      <ion-toggle color="dark" checked="true"></ion-toggle>
+    </ion-item> -->
+
+    <!-- <ion-item>
+      <ion-label>Galadriel</ion-label>
+      <ion-toggle color="energized"></ion-toggle>
+    </ion-item>  -->
+
+  </ion-list>
 </ion-content>

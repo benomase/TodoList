@@ -11,6 +11,8 @@ import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {EmailValidator} from "../../validators/EmailValidator";
 import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
 import {ListsPage} from "../lists/lists";
+import {HomePage} from "../home/home";
+
 
 /**
  * Generated class for the AuthPage page.
@@ -28,7 +30,8 @@ export class AuthPage {
   user: any;
   public loginForm: FormGroup;
   public loading: Loading;
-
+  userUuid:string;
+  
   constructor(public navCtrl: NavController,
               public todoService: TodoServiceProvider,
               public formBuilder: FormBuilder,
@@ -97,7 +100,8 @@ export class AuthPage {
   }
 
   accessGranted(userUuid : string) {
-    this.navCtrl.push('ListsPage',{userUuid: userUuid});
+    // this.navCtrl.push('ListsPage',{userUuid: userUuid});
+    this.userUuid=userUuid;
   }
 
   logout() {
@@ -112,5 +116,10 @@ export class AuthPage {
       }).catch((error) => {
 
     });
+  }
+
+  accessToMyTodoList(){
+    // console.log(this.user.userUuid)
+    this.navCtrl.push('ListsPage', { userUuid: this.userUuid});
   }
 }

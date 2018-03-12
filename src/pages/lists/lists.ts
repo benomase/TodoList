@@ -20,10 +20,9 @@ import {TodosPage} from "../todos/todos";
 export class ListsPage {
   listsIds: any;
   userUuid: string;
-//  todoLists: AngularFireList<any>[];
   todoLists: {};
 
-  tempList : AngularFireList<any>;
+  tempList: AngularFireList<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
@@ -35,8 +34,8 @@ export class ListsPage {
       this.todoLists = [];
       this.listsIds = listsIds;
       for (let listId in this.listsIds) {
-         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
-            this.todoLists[listId] = list;
+        this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
+          this.todoLists[listId] = list;
         });
       }
     });

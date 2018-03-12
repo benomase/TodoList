@@ -19,7 +19,10 @@ export class TodoServiceProvider {
 
   constructor(public db : AngularFireDatabase) {
   }
-
+  /**
+   * GET TODO LISTS ID
+   * @param {String} userUuid 
+   */
   public getTodoListsIds(userUuid: string): Observable<any> {
     return this.db.list(`/users/${userUuid}/lists/`).valueChanges();
   }
@@ -28,7 +31,12 @@ export class TodoServiceProvider {
    //return this.db.list(`/lists/${listUuid}`).valueChanges();
     return this.db.object(`/lists/${listUuid}`).valueChanges();
   }
-
+  public getTodoMyLists(){
+  //TODO
+  }
+  public getTodoSharedLists(){
+    //TODO
+  }
   /**
    * ADD LIST ID TO USER
    */
@@ -79,10 +87,11 @@ export class TodoServiceProvider {
 
   }
   public removeTodoList(listUuid: String,userUuid: String){
-    this.db.object(`/${userUuid}/lists/${listUuid}`).remove();//a voir avec firebase
+    this.db.object(`/users/${userUuid}/lists/${listUuid}`).remove();//a voir avec firebase
+    this.db.object(`/lists/${listUuid}`).remove();
   }
   public removeTodo(listUuid : String, todoUuid:String, userUuid: string) {
-    this.db.object(`/${userUuid}/lists/${listUuid}/items/${todoUuid}`).remove();
+    this.db.object(`/lists/${listUuid}/items/${todoUuid}`).remove();
   }
 
   uuidv4() {
