@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {Events, IonicPage, ModalController, NavController, NavParams,AlertController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Events, IonicPage, ModalController, NavController, NavParams, AlertController} from 'ionic-angular';
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {AngularFireList} from "angularfire2/database";
 import {AddListPage} from "../add-list/add-list";
@@ -20,34 +20,43 @@ import {TodosPage} from "../todos/todos";
 export class ListsPage {
   listsIds: any;
   userUuid: string;
+//  todoLists: AngularFireList<any>[];
+  todoLists: {};
+
+  tempList : AngularFireList<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams
-  , public todoService : TodoServiceProvider, public modalCtrl:ModalController
-              ,public events :Events,public alertCtrl: AlertController) {
+    , public todoService: TodoServiceProvider, public modalCtrl: ModalController
+    , public events: Events, public alertCtrl: AlertController) {
+
     this.userUuid = navParams.data.userUuid;
-     this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds : AngularFireList<any>) => {
+
+    this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds: AngularFireList<any>) => {
+      this.todoLists = [];
       this.listsIds = listsIds;
-
-      for(let listId in this.listsIds) {
-
+      for (let listId in this.listsIds) {
+         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
+            this.todoLists[listId] = list;
+        });
       }
     });
 
+    console.log('hh')
   }
 
-  ionViewDidLoad(){
+  ionViewDidLoad() {
   }
 
   selectList(list) {
-    this.navCtrl.push('TodosPage',{listUuid:list.uuid,userUuid:this.userUuid});
+    this.navCtrl.push('TodosPage', {listUuid: list.uuid, userUuid: this.userUuid});
   }
 
   addList() {
     let addModal = this.modalCtrl.create('AddListPage');
     addModal.onDidDismiss((list) => {
-      if(list){
-        console.log('on dismiss add item :'+list);
-        this.todoService.addTodoList(list,this.userUuid);
+      if (list) {
+        console.log('on dismiss add item :' + list);
+        this.todoService.addTodoList(list, this.userUuid);
       }
 
     });
@@ -55,7 +64,7 @@ export class ListsPage {
     addModal.present();
   }
 
-  edit(list){
+  edit(list) {
     console.log('Edit a TodoList');
     let prompt = this.alertCtrl.create({
       title: 'Modifier une liste',
@@ -77,14 +86,15 @@ export class ListsPage {
           text: 'Modifier',
           handler: data => {
             console.log(JSON.stringify(data));
-            this.todoService.editTodoList(list.uuid,list,this.userUuid);
+            this.todoService.editTodoList(list.uuid, list, this.userUuid);
           }
         }
       ]
     });
     prompt.present();
   }
-  remove(list){
+
+  remove(list) {
     console.log('remove list');
     let confirm = this.alertCtrl.create({
       title: 'Confirmation de suppression',
@@ -99,13 +109,13 @@ export class ListsPage {
         {
           text: 'Confirmer',
           handler: () => {
-            this.todoService.removeTodoList(list.uuid,this.userUuid);
+            this.todoService.removeTodoList(list.uuid, this.userUuid);
           }
         }
       ]
     });
     confirm.present();
-    
+
   }
-  
+
 }

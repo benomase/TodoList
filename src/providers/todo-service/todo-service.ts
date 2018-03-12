@@ -17,19 +17,24 @@ export class TodoServiceProvider {
   dataList: AngularFireList<any>;
   data: Observable<any[]>;
 
-
   constructor(public db : AngularFireDatabase) {
   }
 
   public getTodoListsIds(userUuid: string): Observable<any> {
-    return this.db.list(`/${userUuid}/lists/`).valueChanges();
+    return this.db.list(`/users/${userUuid}/lists/`).valueChanges();
+  }
+
+  public getTodoList(listUuid: string): Observable<any> {
+   //return this.db.list(`/lists/${listUuid}`).valueChanges();
+    return this.db.object(`/lists/${listUuid}`).valueChanges();
   }
 
   /**
    * ADD LIST ID TO USER
    */
   public addTodoListId(listUuid: string,userUuid: string) {
-    this.db.object(`/users/${userUuid}/lists/${listUuid}`).set("");
+    //this.db.object(`/users/${userUuid}/lists/${listUuid}`).set(listUuid);
+    this.db.list(`/users/${userUuid}/lists`).push(listUuid);
   }
 
   /**

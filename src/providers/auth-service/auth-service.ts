@@ -12,7 +12,7 @@ import {AngularFireAuth} from "angularfire2/auth";
 @Injectable()
 export class AuthServiceProvider {
 
-  constructor(public afAuth: AngularFireAuth,) {
+  constructor(public afAuth: AngularFireAuth) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
