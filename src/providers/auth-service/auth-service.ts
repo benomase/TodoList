@@ -53,8 +53,9 @@ export class AuthServiceProvider {
           .database()
           .ref('/users')
           .child(result.user.uid)
-          .set({email: result.user.email});
-          resolve(result);
+          //.set({email: result.user.email});
+          .set('email',result.user.email);
+        resolve(result);
       }).catch((err) =>{
           reject(err)
       });
