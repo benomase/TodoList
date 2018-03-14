@@ -15,9 +15,9 @@ import { ListsPage } from "../lists/lists";
   templateUrl: 'home.html',
 })
 export class HomePage {
-userUuid:string;
+  userID:string;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.userUuid = navParams.data.userUuid;
+    this.userID = navParams.data.userID;
   }
 
   ionViewDidLoad() {
@@ -25,7 +25,7 @@ userUuid:string;
   }
 
   accessToMyTodoList(){
-    console.log(this.userUuid)
-    this.navCtrl.push('ListsPage', { userUuid: this.userUuid });
+    console.log(this.userID)
+    this.navCtrl.push('ListsPage', { userID: this.userID });
   }
 }

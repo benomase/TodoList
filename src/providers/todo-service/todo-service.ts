@@ -14,17 +14,16 @@ import {Injectable} from "@angular/core";
 */
 @Injectable()
 export class TodoServiceProvider {
-  dataList: AngularFireList<any>;
   data: Observable<any[]>;
 
   constructor(public db : AngularFireDatabase) {
   }
   /**
    * GET TODO LISTS ID
-   * @param {String} userUuid 
+   * @param {String} userID
    */
-  public getTodoListsIds(userUuid: string): Observable<any> {
-    return this.db.list(`/users/${userUuid}/lists/`).valueChanges();
+  public getTodoListsIds(userID: string): Observable<any> {
+    return this.db.list(`/users/${userID}/lists/`).valueChanges();
   }
 
   public getTodoList(listUuid: string): Observable<any> {
@@ -40,9 +39,9 @@ export class TodoServiceProvider {
   /**
    * ADD LIST ID TO USER
    */
-  public addTodoListId(listUuid: string,userUuid: string) {
-    //this.db.object(`/users/${userUuid}/lists/${listUuid}`).set(listUuid);
-    this.db.list(`/users/${userUuid}/lists`).push(listUuid);
+  public addTodoListId(listUuid: string, userID: string) {
+    //this.db.object(`/users/${userID}/lists/${listUuid}`).set(listUuid);
+    this.db.list(`/users/${userID}/lists`).push(listUuid);
   }
 
   /**
@@ -58,11 +57,11 @@ export class TodoServiceProvider {
   /**
    * ADD LIST (MAIN)
    * @param {TodoList} list
-   * @param {string} userUuid
+   * @param {string} userID
    */
-  public addTodoList(list : TodoList, userUuid: string) {
+  public addTodoList(list : TodoList, userID: string) {
     let listUuid = this.addTodoListObject(list);
-    this.addTodoListId(listUuid,userUuid);
+    this.addTodoListId(listUuid,userID);
   }
 
   public getTodos(listUuid:string) : Observable<any> {
@@ -79,20 +78,32 @@ export class TodoServiceProvider {
     ref.set(newItem);
   }
 
-  public editTodo(listUuid : String, editedItem: TodoItem, userUuid: string) {
+  public editTodo(listUuid : string, editedItem: TodoItem, userID: string) {
     this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
   }
-  public editTodoList(listUuid: String,editedList:TodoList,userUuid: String){
-    this.db.object(`/${userUuid}/lists/${listUuid}`).set(editedList);//a voir avec firebase
+  public editTodoList(listUuid: string,editedList:TodoList,userID: string){
+    this.db.object(`/${userID}/lists/${listUuid}`).set(editedList);//a voir avec firebase
 
   }
-  public removeTodoList(listUuid: String,userUuid: String){
-    this.db.object(`/users/${userUuid}/lists/${listUuid}`).remove();//a voir avec firebase
+  public removeTodoList(listUuid: string,userID: string){
+    this.db.object(`/users/${userID}/lists/${listUuid}`).remove();//a voir avec firebase
     this.db.object(`/lists/${listUuid}`).remove();
   }
-  public removeTodo(listUuid : String, todoUuid:String, userUuid: string) {
+  public removeTodo(listUuid : string, todoUuid:string, userID: string) {
     this.db.object(`/lists/${listUuid}/items/${todoUuid}`).remove();
   }
+
+  public shareTodoList(listUuid : string, email:string) {
+    this.db.list(`/users`).valueChanges().subscribe((usersList)=>{
+      // for(let user in usersList) {
+      //   if(user.email === email)
+          console.log(usersList);
+      // }
+    });
+  }
+
+
+
 
   uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

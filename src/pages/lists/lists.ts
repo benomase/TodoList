@@ -4,6 +4,7 @@ import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {AngularFireList} from "angularfire2/database";
 import {AddListPage} from "../add-list/add-list";
 import {TodosPage} from "../todos/todos";
+import {ShareListPage} from "../share-list/share-list";
 
 /**
  * Generated class for the ListsPage page.
@@ -19,18 +20,17 @@ import {TodosPage} from "../todos/todos";
 })
 export class ListsPage {
   listsIds: any;
-  userUuid: string;
-  todoLists: {};
-
+  userID: string;
+  todoLists: any;
   tempList: AngularFireList<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
     , public events: Events, public alertCtrl: AlertController) {
 
-    this.userUuid = navParams.data.userUuid;
+    this.userID = navParams.data.userID;
 
-    this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds: AngularFireList<any>) => {
+    this.todoService.getTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
       this.todoLists = [];
       this.listsIds = listsIds;
       for (let listId in this.listsIds) {
@@ -47,7 +47,7 @@ export class ListsPage {
   }
 
   selectList(list) {
-    this.navCtrl.push('TodosPage', {listUuid: list.uuid, userUuid: this.userUuid});
+    this.navCtrl.push('TodosPage', {listUuid: list.uuid, userID: this.userID});
   }
 
   addList() {
@@ -55,7 +55,7 @@ export class ListsPage {
     addModal.onDidDismiss((list) => {
       if (list) {
         console.log('on dismiss add item :' + list);
-        this.todoService.addTodoList(list, this.userUuid);
+        this.todoService.addTodoList(list, this.userID);
       }
 
     });
@@ -85,13 +85,27 @@ export class ListsPage {
           text: 'Modifier',
           handler: data => {
             console.log(JSON.stringify(data));
-            this.todoService.editTodoList(list.uuid, list, this.userUuid);
+            this.todoService.editTodoList(list.uuid, list, this.userID);
           }
         }
       ]
     });
     prompt.present();
   }
+
+  share(list) {
+    console.log('Share a TodoList');
+    let addModal = this.modalCtrl.create('ShareListPage');
+    addModal.onDidDismiss((email) => {
+      if (list) {
+        this.todoService.shareTodoList(list, email);
+      }
+    });
+
+
+    addModal.present();
+  }
+
 
   remove(list) {
     console.log('remove list');
@@ -108,7 +122,7 @@ export class ListsPage {
         {
           text: 'Confirmer',
           handler: () => {
-            this.todoService.removeTodoList(list.uuid, this.userUuid);
+            this.todoService.removeTodoList(list.uuid, this.userID);
           }
         }
       ]

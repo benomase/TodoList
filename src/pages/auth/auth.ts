@@ -30,8 +30,8 @@ export class AuthPage {
   user: any;
   public loginForm: FormGroup;
   public loading: Loading;
-  userUuid:string;
-  
+  userID:string;
+
   constructor(public navCtrl: NavController,
               public todoService: TodoServiceProvider,
               public formBuilder: FormBuilder,
@@ -70,7 +70,7 @@ export class AuthPage {
         this.loginForm.value.password)
         .then( authData => {
           this.loading.dismiss().then( () => {
-            this.accessGranted(authData.uid);
+            this.accessGranted(authData.email.replace('@','').replace('.',''));
           });
         }, error => {
           this.loading.dismiss().then( () => {
@@ -99,9 +99,9 @@ export class AuthPage {
     this.navCtrl.push('ResetPasswordPage');
   }
 
-  accessGranted(userUuid : string) {
+  accessGranted(userID : string) {
     // this.navCtrl.push('ListsPage',{userUuid: userUuid});
-    this.userUuid=userUuid;
+    this.userID=userID;
   }
 
   logout() {
@@ -120,6 +120,6 @@ export class AuthPage {
 
   accessToMyTodoList(){
     // console.log(this.user.userUuid)
-    this.navCtrl.push('ListsPage', { userUuid: this.userUuid});
+    this.navCtrl.push('ListsPage', { userID: this.userID});
   }
 }

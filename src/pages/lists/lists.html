@@ -16,7 +16,6 @@
   <ion-list>
     <ion-item-sliding *ngFor="let list of todoLists" #item>
       <ion-item (click)="selectList(list)">
-        <!--{{list | json}}-->
         {{list.name}}
       </ion-item>
       <ion-item-options side="left">
