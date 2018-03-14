@@ -4,6 +4,10 @@ import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
 import { AngularFireList } from "angularfire2/database";
 import { AddListPage } from "../add-list/add-list";
 import { TodosPage } from "../todos/todos";
+import { ActionSheetController } from 'ionic-angular';
+import { AngularFireAuth } from "angularfire2/auth";
+
+import { AuthPage } from "../auth/auth";
 
 /**
  * Generated class for the ListsPage page.
@@ -20,31 +24,61 @@ import { TodosPage } from "../todos/todos";
 export class ListsPage {
   listsIds: any;
   userUuid: string;
-  lists: AngularFireList<any>;
+  lists: Array<any>;
+  matchedName: string[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
-    , public events: Events, public alertCtrl: AlertController) {
-    console.log('constructor ListPage');
+    , public events: Events, public alertCtrl: AlertController,
+    public actionSheetCtrl: ActionSheetController,
+    public afAuth: AngularFireAuth) {
+
+    this.afAuth.authState.subscribe((auth) => {
+      if (auth) {
+        console.log("auth ok");
+      } else {
+        console.log("auth not ok");
+        this.navCtrl.setPages([
+          { page: "AuthPage" }
+        ]);
+      }
+
+    });
+
+
+
     this.userUuid = navParams.data.userUuid;
+
     this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds: AngularFireList<any>) => {
+      console.log(listsIds)
       this.listsIds = listsIds;
 
-      for (let listId in this.listsIds) {
-      
+      this.todoService.setMydataList(listsIds);
+      //  this.lists = this.todoService.getDataList();
+      // this.lists =this.todoService.dataArray;
 
-      }
     });
+    this.todoService.getDataList().subscribe(lists => (
+      console.log(lists),
+      this.lists = lists
+    ));
+
 
   }
 
 
+
+  ionViewDidLoad() {
+
+  }
   selectList(list) {
     this.navCtrl.push('TodosPage', { listUuid: list.uuid, userUuid: this.userUuid });
   }
 
   addList() {
     let addModal = this.modalCtrl.create('AddListPage');
+
+
     addModal.onDidDismiss((list) => {
       if (list) {
         console.log('on dismiss add item :' + list);
@@ -109,4 +143,30 @@ export class ListsPage {
 
   }
 
+  // presentActionSheet() {
+  //   let actionSheet = this.actionSheetCtrl.create({
+  //     title: 'Add new list',
+  //     buttons: [
+  //       {
+  //         text: 'Add',
+  //         role: 'Add',
+  //         handler: () => {
+  //           console.log('Add clicked');
+
+  //           this.addList("");
+  //         }
+  //       }, {
+  //         text: 'Add using speach recognition',
+  //         handler: () => {
+  //           console.log('speach recognition clicked');
+  //          // this.addListWithSpeachRecognition();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   actionSheet.present();
+  // }
+
+
 }
+

@@ -13,13 +13,15 @@ import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
 import {ListsPage} from "../lists/lists";
 import {HomePage} from "../home/home";
 
-
 /**
  * Generated class for the AuthPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+
+
+ 
 
 @IonicPage()
 @Component({

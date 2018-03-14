@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ListsPage } from "../lists/lists";
+import {AngularFireAuth} from "angularfire2/auth";
 
 /**
  * Generated class for the HomePage page.
@@ -16,8 +17,19 @@ import { ListsPage } from "../lists/lists";
 })
 export class HomePage {
 userUuid:string;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    public afAuth: AngularFireAuth) {
     this.userUuid = navParams.data.userUuid;
+
+    this.afAuth.authState.subscribe((auth) => {
+      if(auth){
+         //this.accessGranted(this.afAuth.auth.currentUser.uid);
+      console.log("auth ok");
+      }else{
+        console.log("auth not ok");
+      }
+       
+     });
   }
 
   ionViewDidLoad() {
