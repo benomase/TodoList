@@ -1,6 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as firebase from "firebase/app";
-import {AngularFireAuth} from "angularfire2/auth";
+import { AngularFireAuth } from "angularfire2/auth";
+import { GooglePlus } from "@ionic-native/google-plus";
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -12,7 +13,8 @@ import {AngularFireAuth} from "angularfire2/auth";
 @Injectable()
 export class AuthServiceProvider {
 
-  constructor(public afAuth: AngularFireAuth) {
+  constructor(public afAuth: AngularFireAuth,
+    private googlePlus: GooglePlus) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
@@ -24,8 +26,8 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child(email.replace('@','').replace('.',''))
-          .set({email: email, uid: newUser.uid});
+          .child((email.replace('@', '')).replace(/\./g, ''))
+          .set({ email: email, uid: newUser.uid });
       });
   }
 
@@ -52,16 +54,41 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child(result.user.email.replace('@','').replace('.',''))
-          .set('email',result.user.email);
+          .child((result.user.email.replace('@', '')).replace(/\./g, ''))
+          .set('email', result.user.email);
 
         resolve(result);
-      }).catch((err) =>{
-          reject(err)
+      }).catch((err) => {
+        reject(err)
       });
     });
   }
+ 
+  async loginGoogleNative(): Promise<any> {
+    const googlePlusUser = await this.googlePlus.login({
+      webClientId:
+      "597263730613-qd22cpi5cgu5q6ll313tbnvh63c32fsb.apps.googleusercontent.com",
+      offline: true,
+      scopes: "profile email"
+    });
 
+
+    return new Promise((resolve, reject) => {
+      this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(googlePlusUser.idToken)).then(() => {//(result) => {
+        firebase
+          .database()
+          .ref('/users')
+          .child((googlePlusUser.email.replace('@', '')).replace(/\./g, ''))
+          .set('email', googlePlusUser.email);
+
+        resolve(googlePlusUser.email);
+      }
+      ).catch((err) => {
+        reject(err)
+      });
+    });
+
+  }
   logoutUser(): Promise<void> {
     return firebase.auth().signOut();
   }

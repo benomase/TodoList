@@ -165,7 +165,6 @@ export class ListsPage {
 
   }
   failNFCMsg(err) {
-    //this.showToast('NFC Failed')
     console.log("")
   }
   addNFCListener(onSuccess, onError) {

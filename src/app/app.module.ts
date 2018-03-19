@@ -17,7 +17,9 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { NFC, Ndef } from "@ionic-native/nfc";
 
 import { ToolProvider } from '../providers/tool/tool';
-
+import { FilePath } from '@ionic-native/file-path';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { GooglePlus } from '@ionic-native/google-plus';
 @NgModule({
   declarations: [
     MyApp
@@ -42,7 +44,10 @@ import { ToolProvider } from '../providers/tool/tool';
     AuthServiceProvider,
     NFC,
     Ndef,
-    ToolProvider
+    ToolProvider,
+    FileChooser,
+    FilePath,
+    GooglePlus
   ]
 })
 export class AppModule {}

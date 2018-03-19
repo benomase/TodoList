@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component,NgZone } from '@angular/core';
 import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
 import {TodoItem} from "../../models/model";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
+import { FileChooser } from "@ionic-native/file-chooser";
+import { FilePath } from "@ionic-native/file-path";
+import firebase from "firebase";
 
 /**
  * Generated class for the ViewTodoPage page.
@@ -19,8 +22,15 @@ export class ViewTodoPage {
   name;
   complete;
   uuid;
+  nativepath: any;
+  firestore = firebase.storage();
+  imgsource: any;
 
-  constructor(public navParams: NavParams, public view: ViewController, public todoService: TodoServiceProvider){
+  constructor(public navParams: NavParams, 
+    public view: ViewController, 
+    public todoService: TodoServiceProvider,
+    private fileChooser: FileChooser,
+    public zone: NgZone){
   }
 
   ionViewDidLoad() {
@@ -42,5 +52,49 @@ export class ViewTodoPage {
 
     this.view.dismiss(todo);
   }
+//images
+addImage() {
+  this.fileChooser.open().then(url => {
+    (<any>window).FilePath.resolveNativePath(url, result => {
+      this.nativepath = result;
+      this.uploadImage();
+    });
+  });
+}
 
+uploadImage() {
+  (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
+    res.file(resFile => {
+      var reader = new FileReader();
+      reader.readAsArrayBuffer(resFile);
+      reader.onloadend = (evt: any) => {
+        var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
+        var imageStore = this.firestore.ref().child(this.uuid);
+        imageStore
+          .put(imgBlob)
+          .then(res => {
+            // this.showToast("upload sucess", "bottom");
+            this.displayImage();
+          })
+          .catch(err => {
+            alert("Upload Failed" + err);
+          });
+      };
+    });
+  });
+}
+
+displayImage() {
+  // this.showToast(this.itemData.uuid, 'top')
+  this.firestore
+    .ref()
+    .child(this.uuid)
+    .getDownloadURL()
+    .then(url => {
+      this.zone.run(() => {
+        // this.showToast("image uploaded", "bottom");
+        this.imgsource = url;
+      });
+    });
+}
 }

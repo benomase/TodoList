@@ -21,6 +21,9 @@
     "@angular/platform-browser": "5.0.3",
     "@angular/platform-browser-dynamic": "5.0.3",
     "@ionic-native/core": "4.4.0",
+    "@ionic-native/file-chooser": "^4.5.3",
+    "@ionic-native/file-path": "^4.5.3",
+    "@ionic-native/google-plus": "^4.6.0",
     "@ionic-native/nfc": "^4.5.3",
     "@ionic-native/speech-recognition": "^4.5.3",
     "@ionic-native/splash-screen": "4.4.0",
@@ -31,6 +34,9 @@
     "cordova-android": "7.0.0",
     "cordova-browser": "5.0.3",
     "cordova-plugin-device": "^2.0.1",
+    "cordova-plugin-filechooser": "^1.0.1",
+    "cordova-plugin-filepath": "^1.2.0",
+    "cordova-plugin-googleplus": "^5.2.1",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-speechrecognition": "^1.2.0",
@@ -59,7 +65,12 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "phonegap-nfc": {},
-      "cordova-plugin-x-toast": {}
+      "cordova-plugin-x-toast": {},
+      "cordova-plugin-filechooser": {},
+      "cordova-plugin-filepath": {},
+      "cordova-plugin-googleplus": {
+        "REVERSED_CLIENT_ID": "597263730613-qd22cpi5cgu5q6ll313tbnvh63c32fsb.apps.googleusercontent.com"
+      }
     },
     "platforms": [
       "browser",

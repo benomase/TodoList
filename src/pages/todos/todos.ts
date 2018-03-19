@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import {Alert, AlertCmp, AlertController, IonicPage, ModalController, NavController, NavParams} from 'ionic-angular';
-import {AngularFireList} from "angularfire2/database";
-import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import {AddTodoPage} from "../add-todo/add-todo";
-import {ViewTodoPage} from "../view-todo/view-todo";
-
+import { Alert, AlertCmp, AlertController, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+import { AngularFireList } from "angularfire2/database";
+import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
+import { AddTodoPage } from "../add-todo/add-todo";
+import { ViewTodoPage } from "../view-todo/view-todo";
 /**
  * Generated class for the TodosPage page.
  *
@@ -18,21 +17,22 @@ import {ViewTodoPage} from "../view-todo/view-todo";
   templateUrl: 'todos.html',
 })
 export class TodosPage {
-  listUuid : string;
+  listUuid: string;
   userID: string;
   todos: AngularFireList<any>;
+ 
 
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public todoService : TodoServiceProvider,
-              public alertCtrl: AlertController,
-              public modalCtrl: ModalController) {
+    public navParams: NavParams,
+    public todoService: TodoServiceProvider,
+    public alertCtrl: AlertController,
+    public modalCtrl: ModalController) {
     this.listUuid = this.navParams.data.listUuid;
     this.userID = this.navParams.data.userID;
 
-    this.todoService.getTodos(this.listUuid).subscribe((todos : AngularFireList<any>) => {
-     
+    this.todoService.getTodos(this.listUuid).subscribe((todos: AngularFireList<any>) => {
+
       this.todos = todos;
     });
   }
@@ -45,8 +45,8 @@ export class TodosPage {
     let addModal = this.modalCtrl.create('AddTodoPage');
     addModal.onDidDismiss((todo) => {
 
-      if(todo){
-        console.log('on dismiss add todo :'+todo);
+      if (todo) {
+        console.log('on dismiss add todo :' + todo);
         this.saveTodo(todo);
       }
 
@@ -56,45 +56,46 @@ export class TodosPage {
   }
 
   saveTodo(todo) {
-    this.todoService.addTodo(this.listUuid,todo);
+    this.todoService.addTodo(this.listUuid, todo);
   }
 
   editTodo(todo) {
-    this.todoService.editTodo(this.listUuid,todo,this.userID);
+    this.todoService.editTodo(this.listUuid, todo, this.userID);
   }
 
-  viewTodo(todo){
-      let editModal = this.modalCtrl.create('ViewTodoPage',{todo : todo});
+  viewTodo(todo) {
+    let editModal = this.modalCtrl.create('ViewTodoPage', { todo: todo });
 
-      editModal.onDidDismiss((todo) => {
-        if(todo){
-          this.editTodo(todo);
-        }
-      });
-      editModal.present();
-    }
+    editModal.onDidDismiss((todo) => {
+      if (todo) {
+        this.editTodo(todo);
+      }
+    });
+    editModal.present();
+  }
 
-    deleteTodo(todo) {
-      let alert = this.alertCtrl.create({
-        title: 'Confirmation de suppression',
-        message: 'Voulez vous vraiment supprimer cet Item?',
-        buttons: [
-          {
-            text: 'Annuler',
-            handler: () => {
-              console.log('suppression annuler');
-            }
-          },
-          {
-            text: 'Confirmer',
-            handler: () => {
-              console.log('Confirmer');
-              this.todoService.removeTodo(this.listUuid,todo.uuid, this.userID)
-            }
+  deleteTodo(todo) {
+    let alert = this.alertCtrl.create({
+      title: 'Confirmation de suppression',
+      message: 'Voulez vous vraiment supprimer cet Item?',
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: () => {
+            console.log('suppression annuler');
           }
-        ]
-      });
-      alert.present();
-    }
+        },
+        {
+          text: 'Confirmer',
+          handler: () => {
+            console.log('Confirmer');
+            this.todoService.removeTodo(this.listUuid, todo.uuid, this.userID)
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+  
 
 }
