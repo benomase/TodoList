@@ -16,6 +16,8 @@ import { TodoServiceProvider } from '../providers/todo-service/todo-service';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { NFC, Ndef } from "@ionic-native/nfc";
 
+import { ToolProvider } from '../providers/tool/tool';
+
 @NgModule({
   declarations: [
     MyApp
@@ -39,7 +41,8 @@ import { NFC, Ndef } from "@ionic-native/nfc";
     TodoServiceProvider,
     AuthServiceProvider,
     NFC,
-    Ndef
+    Ndef,
+    ToolProvider
   ]
 })
 export class AppModule {}

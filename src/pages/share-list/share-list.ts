@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
+import {TodoList} from "../../models/model";
 
 /**
  * Generated class for the ShareListPage page.
@@ -15,7 +16,20 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class ShareListPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  email: string;
+  constructor(public navCtrl: NavController, public navParams: NavParams,public view: ViewController) {
+  }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad AddListPage');
+  }
+
+  share(){
+    this.view.dismiss(this.email);
+  }
+
+  close(){
+    this.view.dismiss();
   }
 
 }

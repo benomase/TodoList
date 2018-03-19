@@ -19,7 +19,7 @@ import {ViewTodoPage} from "../view-todo/view-todo";
 })
 export class TodosPage {
   listUuid : string;
-  userUuid: string;
+  userID: string;
   todos: AngularFireList<any>;
 
 
@@ -29,7 +29,7 @@ export class TodosPage {
               public alertCtrl: AlertController,
               public modalCtrl: ModalController) {
     this.listUuid = this.navParams.data.listUuid;
-    this.userUuid = this.navParams.data.userUuid;
+    this.userID = this.navParams.data.userID;
 
     this.todoService.getTodos(this.listUuid).subscribe((todos : AngularFireList<any>) => {
      
@@ -60,7 +60,7 @@ export class TodosPage {
   }
 
   editTodo(todo) {
-    this.todoService.editTodo(this.listUuid,todo,this.userUuid);
+    this.todoService.editTodo(this.listUuid,todo,this.userID);
   }
 
   viewTodo(todo){
@@ -89,7 +89,7 @@ export class TodosPage {
             text: 'Confirmer',
             handler: () => {
               console.log('Confirmer');
-              this.todoService.removeTodo(this.listUuid,todo.uuid, this.userUuid)
+              this.todoService.removeTodo(this.listUuid,todo.uuid, this.userID)
             }
           }
         ]

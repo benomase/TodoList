@@ -24,8 +24,8 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child(newUser.uid)
-          .set({email: email});
+          .child(email.replace('@','').replace('.',''))
+          .set({email: email, uid: newUser.uid});
       });
   }
 
@@ -52,9 +52,9 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child(result.user.uid)
-          //.set({email: result.user.email});
+          .child(result.user.email.replace('@','').replace('.',''))
           .set('email',result.user.email);
+
         resolve(result);
       }).catch((err) =>{
           reject(err)
@@ -64,5 +64,10 @@ export class AuthServiceProvider {
 
   logoutUser(): Promise<void> {
     return firebase.auth().signOut();
+  }
+
+
+  public getUserByEmail(email: string) {
+
   }
 }
