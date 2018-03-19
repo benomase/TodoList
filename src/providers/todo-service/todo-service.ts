@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {AngularFireDatabase, AngularFireList} from "angularfire2/database";
 import {TodoItem, TodoList} from "../../models/model";
 import {Observable} from "rxjs/Observable";
@@ -16,8 +16,9 @@ import {Injectable} from "@angular/core";
 export class TodoServiceProvider {
   data: Observable<any[]>;
 
-  constructor(public db : AngularFireDatabase) {
+  constructor(public db: AngularFireDatabase) {
   }
+
   /**
    * GET TODO LISTS ID
    * @param {String} userID
@@ -26,16 +27,27 @@ export class TodoServiceProvider {
     return this.db.list(`/users/${userID}/lists/`).valueChanges();
   }
 
+  getWaitingTodoListsIds2(userID: string): AngularFireList<any> {
+    return this.db.list(`/users/${userID}/w-lists/`);
+  }
+
+  getWaitingTodoListsIds(userID: string): Observable<any> {
+    return this.db.list(`/users/${userID}/w-lists/`).valueChanges();
+  }
+
   public getTodoList(listUuid: string): Observable<any> {
-   //return this.db.list(`/lists/${listUuid}`).valueChanges();
+    //return this.db.list(`/lists/${listUuid}`).valueChanges();
     return this.db.object(`/lists/${listUuid}`).valueChanges();
   }
-  public getTodoMyLists(){
-  //TODO
-  }
-  public getTodoSharedLists(){
+
+  public getTodoMyLists() {
     //TODO
   }
+
+  public getTodoSharedLists() {
+    //TODO
+  }
+
   /**
    * ADD LIST ID TO USER
    */
@@ -47,7 +59,7 @@ export class TodoServiceProvider {
   /**
    * ADD LIST TO LISTS
    */
-  public addTodoListObject(list : TodoList) {
+  public addTodoListObject(list: TodoList) {
     let ref = this.db.list(`/lists`).push({});
     list.uuid = ref.key;
     ref.set(list);
@@ -59,12 +71,12 @@ export class TodoServiceProvider {
    * @param {TodoList} list
    * @param {string} userID
    */
-  public addTodoList(list : TodoList, userID: string) {
+  public addTodoList(list: TodoList, userID: string) {
     let listUuid = this.addTodoListObject(list);
-    this.addTodoListId(listUuid,userID);
+    this.addTodoListId(listUuid, userID);
   }
 
-  public getTodos(listUuid:string) : Observable<any> {
+  public getTodos(listUuid: string): Observable<any> {
     return this.db.list(`/lists/${listUuid}/items`).valueChanges();
   }
 
@@ -72,43 +84,41 @@ export class TodoServiceProvider {
    * Add funciton
    */
 
-  public addTodo(listUuid : string, newItem: TodoItem) {
+  public addTodo(listUuid: string, newItem: TodoItem) {
     let ref = this.db.list(`/lists/${listUuid}/items`).push({});
     newItem.uuid = ref.key;
     ref.set(newItem);
   }
 
-  public editTodo(listUuid : string, editedItem: TodoItem, userID: string) {
+  public editTodo(listUuid: string, editedItem: TodoItem, userID: string) {
     this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
   }
-  public editTodoList(listUuid: string,editedList:TodoList,userID: string){
+
+  public editTodoList(listUuid: string, editedList: TodoList, userID: string) {
     this.db.object(`/${userID}/lists/${listUuid}`).set(editedList);//a voir avec firebase
 
   }
-  public removeTodoList(listUuid: string,userID: string){
+
+  public removeTodoList(listUuid: string, userID: string) {
     this.db.object(`/users/${userID}/lists/${listUuid}`).remove();//a voir avec firebase
     this.db.object(`/lists/${listUuid}`).remove();
   }
-  public removeTodo(listUuid : string, todoUuid:string, userID: string) {
+
+  public removeTodo(listUuid: string, todoUuid: string, userID: string) {
     this.db.object(`/lists/${listUuid}/items/${todoUuid}`).remove();
   }
 
-  public shareTodoList(listUuid : string, email:string) {
-    this.db.list(`/users`).valueChanges().subscribe((usersList)=>{
-      // for(let user in usersList) {
-      //   if(user.email === email)
-          console.log(usersList);
-      // }
-    });
+  public shareTodoList(listUuid: string, userID: string) {
+    this.db.list(`/users/${userID}/w-lists`).set(listUuid, listUuid);
   }
 
-
-
-
-  uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+  acceptTodoListSharing(listUuid: string, userID: string) {
+    this.db.object(`/users/${userID}/w-lists/${listUuid}`).remove();
+    this.db.list(`/users/${userID}/lists/`).set(listUuid, listUuid);
   }
+
+  declineTodoListSharing(listUuid: string, userID: string) {
+    this.db.object(`/users/${userID}/w-lists/${listUuid}`).remove();
+  }
+
 }

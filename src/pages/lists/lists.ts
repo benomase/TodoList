@@ -5,6 +5,7 @@ import {AngularFireList} from "angularfire2/database";
 import {AddListPage} from "../add-list/add-list";
 import {TodosPage} from "../todos/todos";
 import {ShareListPage} from "../share-list/share-list";
+import {ToolProvider} from "../../providers/tool/tool";
 
 /**
  * Generated class for the ListsPage page.
@@ -24,9 +25,11 @@ export class ListsPage {
   todoLists: any;
   tempList: AngularFireList<any>;
 
+
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
-    , public events: Events, public alertCtrl: AlertController) {
+    , public events: Events, public alertCtrl: AlertController
+  , public toolProvider: ToolProvider) {
 
     this.userID = navParams.data.userID;
 
@@ -98,7 +101,7 @@ export class ListsPage {
     let addModal = this.modalCtrl.create('ShareListPage');
     addModal.onDidDismiss((email) => {
       if (list) {
-        this.todoService.shareTodoList(list, email);
+        this.todoService.shareTodoList(list.uuid, this.toolProvider.removeSpecialCharacters(email));
       }
     });
 

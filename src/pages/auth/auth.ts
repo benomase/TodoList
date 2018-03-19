@@ -12,6 +12,10 @@ import {EmailValidator} from "../../validators/EmailValidator";
 import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
 import {ListsPage} from "../lists/lists";
 import {HomePage} from "../home/home";
+import {NotificationsPage} from "../notifications/notifications";
+import {ToolProvider} from "../../providers/tool/tool";
+import {Observable} from "rxjs/Observable";
+import {AngularFireList} from "angularfire2/database";
 
 
 /**
@@ -30,13 +34,18 @@ export class AuthPage {
   user: any;
   public loginForm: FormGroup;
   public loading: Loading;
-  userID:string;
-
+  userID: string;
+  waitingTodoLists: any;
+  tempList: AngularFireList<any>;
+  waitingListsIds:any;
+  notificationCount: number;
   constructor(public navCtrl: NavController,
               public todoService: TodoServiceProvider,
               public formBuilder: FormBuilder,
               public authProvider: AuthServiceProvider,
-              public alertCtrl: AlertController, public loadingCtrl: LoadingController) {
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
+              public toolProvider: ToolProvider) {
     /**
      * TODO KEEP USER LOGGED IN
      */
@@ -44,7 +53,6 @@ export class AuthPage {
     //  if(auth)
     //    this.accessGranted(this.afAuth.auth.currentUser.uid);
     // });
-
     this.loginForm = formBuilder.group({
       email: ['',
         Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -52,10 +60,11 @@ export class AuthPage {
         Validators.compose([Validators.minLength(6), Validators.required])]
     });
 
+   this.notificationCount = 0;
   }
 
   getState() {
-      return this.authProvider.getState();
+    return this.authProvider.getState();
   }
 
   ionViewDidLoad() {
@@ -63,17 +72,17 @@ export class AuthPage {
 
 
   loginUser(): void {
-    if (!this.loginForm.valid){
+    if (!this.loginForm.valid) {
       console.log(this.loginForm.value);
     } else {
       this.authProvider.loginUser(this.loginForm.value.email,
         this.loginForm.value.password)
-        .then( authData => {
-          this.loading.dismiss().then( () => {
-            this.accessGranted(authData.email.replace('@','').replace('.',''));
+        .then(authData => {
+          this.loading.dismiss().then(() => {
+            this.accessGranted(this.toolProvider.removeSpecialCharacters(authData.email));
           });
         }, error => {
-          this.loading.dismiss().then( () => {
+          this.loading.dismiss().then(() => {
             let alert = this.alertCtrl.create({
               message: error.message,
               buttons: [
@@ -99,16 +108,37 @@ export class AuthPage {
     this.navCtrl.push('ResetPasswordPage');
   }
 
-  accessGranted(userID : string) {
+  accessGranted(userID: string): void {
     // this.navCtrl.push('ListsPage',{userUuid: userUuid});
-    this.userID=userID;
+    this.userID = userID;
+    // this.todoService.getWaitingTodoListsIds(userID).subscribe((list) => {
+    //   this.notificationsCount = list.length();
+    //   debugger;
+    // });
+    //
+
+    // this.todoService.getWaitingTodoListsIds(this.userID).subscribe((list: AngularFireList<any>)=>{
+    //   this.waitingTodosList = list;
+    // });
+
+    // this.todoService.getWaitingTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
+    //   this.waitingTodoLists = [];
+    //   this.waitingListsIds = listsIds;
+    //   for (let listId in this.waitingListsIds) {
+    //     this.todoService.getTodoList(this.waitingListsIds[listId]).subscribe((list: AngularFireList<any>) => {
+    //       this.waitingTodoLists[listId] = list;
+    //     });
+    //   }
+    //
+    //   this.notificationCount = this.waitingTodoLists.length;
+    // });
   }
 
   logout() {
     this.authProvider.logoutUser();
   }
 
-  goToLoginGoogle() : void {
+  goToLoginGoogle(): void {
     this.authProvider.loginGoogle().then(
       (result) => {
         this.accessGranted(result.user.uid);
@@ -118,8 +148,13 @@ export class AuthPage {
     });
   }
 
-  accessToMyTodoList(){
+  accessToMyTodoList() {
     // console.log(this.user.userUuid)
-    this.navCtrl.push('ListsPage', { userID: this.userID});
+    this.navCtrl.push('ListsPage', {userID: this.userID});
   }
+
+  notifications() {
+    this.navCtrl.push('NotificationsPage', {userID: this.userID});
+  }
+
 }

@@ -13,6 +13,7 @@ import {AngularFireDatabaseModule} from "angularfire2/database";
 import {AuthPage} from "../pages/auth/auth";
 import { TodoServiceProvider } from '../providers/todo-service/todo-service';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { ToolProvider } from '../providers/tool/tool';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     TodoServiceProvider,
-    AuthServiceProvider
+    AuthServiceProvider,
+    ToolProvider
   ]
 })
 export class AppModule {}

@@ -25,7 +25,6 @@ export class ShareListPage {
   }
 
   share(){
-
     this.view.dismiss(this.email);
   }
 
