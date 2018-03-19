@@ -1,6 +1,6 @@
 {
   "name": "TodoListApp",
-  "app_id": "",
+  "app_id": "503a4c30",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

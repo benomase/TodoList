@@ -14,6 +14,7 @@ import {AngularFireDatabaseModule} from "angularfire2/database";
 import {AuthPage} from "../pages/auth/auth";
 import { TodoServiceProvider } from '../providers/todo-service/todo-service';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { NFC, Ndef } from "@ionic-native/nfc";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,9 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     SpeechRecognition,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     TodoServiceProvider,
-    AuthServiceProvider
+    AuthServiceProvider,
+    NFC,
+    Ndef
   ]
 })
 export class AppModule {}

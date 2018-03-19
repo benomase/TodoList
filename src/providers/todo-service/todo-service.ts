@@ -16,7 +16,6 @@ import { Injectable } from "@angular/core";
 export class TodoServiceProvider {
   dataList: AngularFireList<any>;
   data: Observable<any[]>;
-  dataArray: Array<any>;
 
   constructor(public db: AngularFireDatabase) {
   }
@@ -26,33 +25,14 @@ export class TodoServiceProvider {
    */
   public getTodoListsIds(userUuid: string): Observable<any> {
     return this.db.list(`/users/${userUuid}/lists/`).valueChanges();
-  }
-  public setMydataList(listsID: any) {
-    console.log('getMyTodoLists');
-
-    console.log(listsID)
-    listsID.map(ID => {
-      console.log(ID)
-      let result = this.db.list(`/lists/${ID}`).valueChanges();
-      result.subscribe(list => {
-        console.log(list);
-        // this.dataList.push(list);
-        console.log(list[0]);
-        this.dataArray.push({
-          name: list[0]
-
-        });
-      })
-
-    })
 
   }
 
-  public getDataList() {
-    console.log(this.dataArray);
-
-    return Observable.of(this.dataArray);
+  public getTodoList(listUuid: string): Observable<any> {
+   //return this.db.list(`/lists/${listUuid}`).valueChanges();
+    return this.db.object(`/lists/${listUuid}`).valueChanges();
   }
+  
 
   public getTodoSharedLists() {
     //TODO
@@ -60,8 +40,10 @@ export class TodoServiceProvider {
   /**
    * ADD LIST ID TO USER
    */
-  public addTodoListId(listUuid: string, userUuid: string) {
-    this.db.object(`/users/${userUuid}/lists/${listUuid}`).set(listUuid);
+
+  public addTodoListId(listUuid: string,userUuid: string) {
+    //this.db.object(`/users/${userUuid}/lists/${listUuid}`).set(listUuid);
+    this.db.list(`/users/${userUuid}/lists`).push(listUuid);
   }
 
   /**
@@ -102,7 +84,7 @@ export class TodoServiceProvider {
     this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
   }
   public editTodoList(listUuid: String, editedList: TodoList, userUuid: String) {
-    this.db.object(`/${userUuid}/lists/${listUuid}`).set(editedList);//a voir avec firebase
+    this.db.object(`/lists/${listUuid}/${listUuid}`).set(editedList);//a voir avec firebase
 
   }
   public removeTodoList(listUuid: String, userUuid: String) {

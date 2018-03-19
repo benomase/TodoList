@@ -12,7 +12,7 @@ import {AngularFireAuth} from "angularfire2/auth";
 @Injectable()
 export class AuthServiceProvider {
 
-  constructor(public afAuth: AngularFireAuth,) {
+  constructor(public afAuth: AngularFireAuth) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
@@ -53,8 +53,9 @@ export class AuthServiceProvider {
           .database()
           .ref('/users')
           .child(result.user.uid)
-          .set({email: result.user.email});
-          resolve(result);
+          //.set({email: result.user.email});
+          .set('email',result.user.email);
+        resolve(result);
       }).catch((err) =>{
           reject(err)
       });

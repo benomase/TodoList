@@ -4,15 +4,19 @@
       Lists !
     </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)=" addList()"><ion-icon name="add-circle"></ion-icon></button>
+
+      <button ion-button icon-only (click)="addList()">
+        <ion-icon name="add-circle"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content>
-  <ion-list>
-    <!--<ion-item *ngFor="let list of lists" (click)="selectList(list)">{{list.name}} </ion-item>-->
 
-    <ion-item-sliding *ngFor="let list of lists" #item>
+<ion-content>
+<!-- {{userUuid}} -->
+  <ion-list>
+    {{todoLists | json}}
+    <ion-item-sliding *ngFor="let list of todoLists" #item>
       <ion-item (click)="selectList(list)">
         {{list.name}}
       </ion-item>

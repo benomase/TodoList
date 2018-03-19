@@ -8,7 +8,7 @@ import { ActionSheetController } from 'ionic-angular';
 import { AngularFireAuth } from "angularfire2/auth";
 
 import { AuthPage } from "../auth/auth";
-
+import { NFC, Ndef } from "@ionic-native/nfc";
 /**
  * Generated class for the ListsPage page.
  *
@@ -24,14 +24,16 @@ import { AuthPage } from "../auth/auth";
 export class ListsPage {
   listsIds: any;
   userUuid: string;
-  lists: Array<any>;
+  todoLists: {};
+  tempList: AngularFireList<any>;
   matchedName: string[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
     , public events: Events, public alertCtrl: AlertController,
     public actionSheetCtrl: ActionSheetController,
-    public afAuth: AngularFireAuth) {
+    public afAuth: AngularFireAuth,
+    public nfc: NFC, public ndef: Ndef) {
 
     this.afAuth.authState.subscribe((auth) => {
       if (auth) {
@@ -42,30 +44,25 @@ export class ListsPage {
           { page: "AuthPage" }
         ]);
       }
-
     });
-
-
 
     this.userUuid = navParams.data.userUuid;
 
     this.todoService.getTodoListsIds(this.userUuid).subscribe((listsIds: AngularFireList<any>) => {
-      console.log(listsIds)
+
+      this.todoLists = [];
       this.listsIds = listsIds;
+      for (let listId in this.listsIds) {
+        this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
+          this.todoLists[listId] = list;
+          console.log('hh' + this.todoLists)
 
-      this.todoService.setMydataList(listsIds);
-      //  this.lists = this.todoService.getDataList();
-      // this.lists =this.todoService.dataArray;
-
+        });
+      }
     });
-    this.todoService.getDataList().subscribe(lists => (
-      console.log(lists),
-      this.lists = lists
-    ));
 
 
   }
-
 
 
   ionViewDidLoad() {
@@ -119,6 +116,7 @@ export class ListsPage {
     });
     prompt.present();
   }
+
   remove(list) {
     console.log('remove list');
     let confirm = this.alertCtrl.create({
@@ -142,7 +140,38 @@ export class ListsPage {
     confirm.present();
 
   }
+  failNFCMsg(err) {
+    //this.showToast('NFC Failed')
+    console.log("")
+  }
+  addNFCListener(onSuccess, onError) {
+    this.nfc.enabled()
+      .then(() => {
 
+        this.nfc.addNdefListener(() => {
+          console.log('successfully attached ndef listener');
+          onSuccess;
+
+        }, (err) => {
+          console.log('error attaching ndef listener', err);
+          onError;
+        }).subscribe((event) => {
+          console.log('received ndef message. the tag contains: ', event.tag);
+          console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
+
+          let message = this.ndef.textRecord('Hello world', "fr-FR", event.tag.id);
+          this.nfc.share([message]).then(onSuccess).catch(onError);
+        });
+
+      }).catch(err => {
+        this.failNFCMsg(err)
+        this.nfc.showSettings();
+
+      })
+
+  }
+
+}
   // presentActionSheet() {
   //   let actionSheet = this.actionSheetCtrl.create({
   //     title: 'Add new list',
@@ -153,7 +182,7 @@ export class ListsPage {
   //         handler: () => {
   //           console.log('Add clicked');
 
-  //           this.addList("");
+  //           this.addList();
   //         }
   //       }, {
   //         text: 'Add using speach recognition',
@@ -168,5 +197,5 @@ export class ListsPage {
   // }
 
 
-}
+
 
