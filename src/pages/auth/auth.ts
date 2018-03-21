@@ -60,7 +60,8 @@ export class AuthPage {
         Validators.compose([Validators.minLength(6), Validators.required])]
     });
 
-   this.notificationCount = 0;
+    this.waitingTodoLists = [];
+    this.waitingListsIds = [];
   }
 
   getState() {
@@ -109,29 +110,11 @@ export class AuthPage {
   }
 
   accessGranted(userID: string): void {
-    // this.navCtrl.push('ListsPage',{userUuid: userUuid});
     this.userID = userID;
-    // this.todoService.getWaitingTodoListsIds(userID).subscribe((list) => {
-    //   this.notificationsCount = list.length();
-    //   debugger;
-    // });
-    //
-
-    // this.todoService.getWaitingTodoListsIds(this.userID).subscribe((list: AngularFireList<any>)=>{
-    //   this.waitingTodosList = list;
-    // });
-
-    // this.todoService.getWaitingTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
-    //   this.waitingTodoLists = [];
-    //   this.waitingListsIds = listsIds;
-    //   for (let listId in this.waitingListsIds) {
-    //     this.todoService.getTodoList(this.waitingListsIds[listId]).subscribe((list: AngularFireList<any>) => {
-    //       this.waitingTodoLists[listId] = list;
-    //     });
-    //   }
-    //
-    //   this.notificationCount = this.waitingTodoLists.length;
-    // });
+    this.todoService.getWaitingTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
+      this.waitingTodoLists = [];
+      this.waitingListsIds = listsIds;
+    });
   }
 
   logout() {

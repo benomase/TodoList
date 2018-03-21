@@ -14,6 +14,7 @@ import {AuthPage} from "../pages/auth/auth";
 import { TodoServiceProvider } from '../providers/todo-service/todo-service';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { ToolProvider } from '../providers/tool/tool';
+import {AngularFirestoreModule} from "angularfire2/firestore";
 
 @NgModule({
   declarations: [
