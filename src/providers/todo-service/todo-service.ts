@@ -1,10 +1,11 @@
+
 import {HttpClient} from '@angular/common/http';
 import {AngularFireDatabase, AngularFireList} from "angularfire2/database";
 import {TodoItem, TodoList} from "../../models/model";
 import {Observable} from "rxjs/Observable";
 import {FirebaseListObservable} from "angularfire2/database-deprecated";
 import "firebase/app";
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 
 /*
   Generated class for the TodoServiceProvider provider.
@@ -23,6 +24,7 @@ export class TodoServiceProvider {
    * GET TODO LISTS ID
    * @param {String} userID
    */
+
   public getTodoListsIds(userID: string): Observable<any> {
     return this.db.list(`/users/${userID}/lists/`).valueChanges();
   }
@@ -51,6 +53,7 @@ export class TodoServiceProvider {
   /**
    * ADD LIST ID TO USER
    */
+
   public addTodoListId(listUuid: string, userID: string) {
     //this.db.object(`/users/${userID}/lists/${listUuid}`).set(listUuid);
     this.db.list(`/users/${userID}/lists`).push(listUuid);
@@ -71,9 +74,11 @@ export class TodoServiceProvider {
    * @param {TodoList} list
    * @param {string} userID
    */
+
   public addTodoList(list: TodoList, userID: string) {
     let listUuid = this.addTodoListObject(list);
     this.addTodoListId(listUuid, userID);
+
   }
 
   public getTodos(listUuid: string): Observable<any> {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonicPage,
   Loading,
@@ -6,17 +6,16 @@ import {
   NavController,
   AlertController, Events
 } from 'ionic-angular';
-import {FormBuilder, Validators, FormGroup} from '@angular/forms';
-import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import {EmailValidator} from "../../validators/EmailValidator";
-import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
-import {ListsPage} from "../lists/lists";
-import {HomePage} from "../home/home";
-import {NotificationsPage} from "../notifications/notifications";
-import {ToolProvider} from "../../providers/tool/tool";
-import {Observable} from "rxjs/Observable";
-import {AngularFireList} from "angularfire2/database";
-
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
+import { EmailValidator } from "../../validators/EmailValidator";
+import { AuthServiceProvider } from "../../providers/auth-service/auth-service";
+import { ListsPage } from "../lists/lists";
+import { HomePage } from "../home/home";
+import { NotificationsPage } from "../notifications/notifications";
+import { ToolProvider } from "../../providers/tool/tool";
+import { Observable } from "rxjs/Observable";
+import { AngularFireList } from "angularfire2/database";
 
 /**
  * Generated class for the AuthPage page.
@@ -24,6 +23,9 @@ import {AngularFireList} from "angularfire2/database";
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
+
+
+
 
 @IonicPage()
 @Component({
@@ -37,15 +39,16 @@ export class AuthPage {
   userID: string;
   waitingTodoLists: any;
   tempList: AngularFireList<any>;
-  waitingListsIds:any;
+  waitingListsIds: any;
   notificationCount: number;
+ 
   constructor(public navCtrl: NavController,
-              public todoService: TodoServiceProvider,
-              public formBuilder: FormBuilder,
-              public authProvider: AuthServiceProvider,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
-              public toolProvider: ToolProvider) {
+    public todoService: TodoServiceProvider,
+    public formBuilder: FormBuilder,
+    public authProvider: AuthServiceProvider,
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController,
+    public toolProvider: ToolProvider) {
     /**
      * TODO KEEP USER LOGGED IN
      */
@@ -70,6 +73,7 @@ export class AuthPage {
 
   ionViewDidLoad() {
   }
+
 
 
   loginUser(): void {
@@ -128,16 +132,27 @@ export class AuthPage {
         console.log(result);
       }).catch((error) => {
 
-    });
+      });
   }
+  goToLoginGoogleNative() {
+    this.authProvider.loginGoogleNative().then(
+      (googlePlusUser) => {
+        this.accessGranted(googlePlusUser.userId);
+        console.log(googlePlusUser);
+      }).catch((error) => {
+
+      });
+  }
+
+  
 
   accessToMyTodoList() {
     // console.log(this.user.userUuid)
-    this.navCtrl.push('ListsPage', {userID: this.userID});
+    this.navCtrl.push('ListsPage', { userID: this.userID });
   }
 
   notifications() {
-    this.navCtrl.push('NotificationsPage', {userID: this.userID});
+    this.navCtrl.push('NotificationsPage', { userID: this.userID });
   }
-
+  
 }

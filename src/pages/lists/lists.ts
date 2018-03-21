@@ -1,9 +1,15 @@
-import {Component} from '@angular/core';
-import {Events, IonicPage, ModalController, NavController, NavParams, AlertController} from 'ionic-angular';
-import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import {AngularFireList} from "angularfire2/database";
-import {AddListPage} from "../add-list/add-list";
-import {TodosPage} from "../todos/todos";
+import { Component } from '@angular/core';
+import { Events, IonicPage, ModalController, NavController, NavParams, AlertController } from 'ionic-angular';
+import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
+import { AngularFireList } from "angularfire2/database";
+import { AddListPage } from "../add-list/add-list";
+import { TodosPage } from "../todos/todos";
+import { ActionSheetController } from 'ionic-angular';
+import { AngularFireAuth } from "angularfire2/auth";
+
+import { AuthPage } from "../auth/auth";
+import { NFC, Ndef } from "@ionic-native/nfc";
+
 import {ShareListPage} from "../share-list/share-list";
 import {ToolProvider} from "../../providers/tool/tool";
 
@@ -21,17 +27,36 @@ import {ToolProvider} from "../../providers/tool/tool";
 })
 export class ListsPage {
   listsIds: any;
+
   userID: string;
   todoLists: any;
   tempList: AngularFireList<any>;
+  matchedName: string[];
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
-    , public events: Events, public alertCtrl: AlertController
-  , public toolProvider: ToolProvider) {
+    , public events: Events, public alertCtrl: AlertController,
+    public actionSheetCtrl: ActionSheetController,
+    public afAuth: AngularFireAuth,
+    public nfc: NFC, public ndef: Ndef
+    , public toolProvider: ToolProvider) {
+
+    this.afAuth.authState.subscribe((auth) => {
+      if (auth) {
+        console.log("auth ok");
+      } else {
+        console.log("auth not ok");
+        this.navCtrl.setPages([
+          { page: "AuthPage" }
+        ]);
+      }
+    });
+
+    
 
     this.userID = navParams.data.userID;
+
 
     this.todoService.getTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
       this.todoLists = [];
@@ -39,22 +64,28 @@ export class ListsPage {
       for (let listId in this.listsIds) {
         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
           this.todoLists[listId] = list;
+          console.log('hh' + this.todoLists)
+
         });
       }
     });
 
-    console.log('hh')
+
   }
+
 
   ionViewDidLoad() {
-  }
 
+  }
   selectList(list) {
+
     this.navCtrl.push('TodosPage', {listUuid: list.uuid, userID: this.userID});
   }
 
   addList() {
     let addModal = this.modalCtrl.create('AddListPage');
+
+
     addModal.onDidDismiss((list) => {
       if (list) {
         console.log('on dismiss add item :' + list);
@@ -133,5 +164,61 @@ export class ListsPage {
     confirm.present();
 
   }
+  failNFCMsg(err) {
+    console.log("")
+  }
+  addNFCListener(onSuccess, onError) {
+    this.nfc.enabled()
+      .then(() => {
+
+        this.nfc.addNdefListener(() => {
+          console.log('successfully attached ndef listener');
+          onSuccess;
+
+        }, (err) => {
+          console.log('error attaching ndef listener', err);
+          onError;
+        }).subscribe((event) => {
+          console.log('received ndef message. the tag contains: ', event.tag);
+          console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
+
+          let message = this.ndef.textRecord('Hello world', "fr-FR", event.tag.id);
+          this.nfc.share([message]).then(onSuccess).catch(onError);
+        });
+
+      }).catch(err => {
+        this.failNFCMsg(err)
+        this.nfc.showSettings();
+
+      })
+
+  }
 
 }
+  // presentActionSheet() {
+  //   let actionSheet = this.actionSheetCtrl.create({
+  //     title: 'Add new list',
+  //     buttons: [
+  //       {
+  //         text: 'Add',
+  //         role: 'Add',
+  //         handler: () => {
+  //           console.log('Add clicked');
+
+  //           this.addList();
+  //         }
+  //       }, {
+  //         text: 'Add using speach recognition',
+  //         handler: () => {
+  //           console.log('speach recognition clicked');
+  //          // this.addListWithSpeachRecognition();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   actionSheet.present();
+  // }
+
+
+
+
