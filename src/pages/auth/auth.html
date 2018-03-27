@@ -4,7 +4,9 @@
 
       <button ion-button icon-only icon-left (click)="notifications()">
         <ion-icon name="notifications"></ion-icon>
-        <ion-label>{{ notificationCount}}</ion-label>
+        <ion-label>
+          {{ waitingListsIds.length}}
+        </ion-label>
       </button>
 
       <button ion-button icon-only icon-left (click)="logout()">
@@ -25,8 +27,6 @@
       <ion-icon ios="ios-list" md="md-list"></ion-icon>
       Access To My Todo List
     </button>
-
-
     <ion-list>
       <ion-list-header>
         Setting
