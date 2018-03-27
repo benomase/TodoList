@@ -1,5 +1,8 @@
 <ion-header>
-  <ion-navbar color="secondary">
+  <ion-navbar color="secondary" hideBackButton="true">
+    <button ion-button menuToggle icon-only float-right>
+          <ion-icon name="menu"></ion-icon>
+        </button>
     <ion-title>
       Todos!
     </ion-title>
@@ -12,6 +15,8 @@
 <ion-content>
   <ion-list>
     <ion-item-sliding *ngFor="let todo of todos" #item>
+
+
       <ion-item (click)="viewTodo(todo)">
         {{todo.name}}
       </ion-item>

@@ -6,12 +6,16 @@ import { AddListPage } from "../add-list/add-list";
 import { TodosPage } from "../todos/todos";
 import { ActionSheetController } from 'ionic-angular';
 import { AngularFireAuth } from "angularfire2/auth";
+import { TodoList } from "../../models/model";
 
 import { AuthPage } from "../auth/auth";
 import { NFC, Ndef } from "@ionic-native/nfc";
-
-import {ShareListPage} from "../share-list/share-list";
-import {ToolProvider} from "../../providers/tool/tool";
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { ChangeDetectorRef } from '@angular/core';
+import { ShareListPage } from "../share-list/share-list";
+import { ToolProvider } from "../../providers/tool/tool";
+import { ToastController } from 'ionic-angular';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 /**
  * Generated class for the ListsPage page.
@@ -31,8 +35,7 @@ export class ListsPage {
   userID: string;
   todoLists: any;
   tempList: AngularFireList<any>;
-  matchedName: string[];
-
+  nameListToAdd: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
@@ -40,7 +43,11 @@ export class ListsPage {
     public actionSheetCtrl: ActionSheetController,
     public afAuth: AngularFireAuth,
     public nfc: NFC, public ndef: Ndef
-    , public toolProvider: ToolProvider) {
+    , public toolProvider: ToolProvider,
+    private toastCtrl: ToastController,
+    private speechRecognition: SpeechRecognition,
+    private cd: ChangeDetectorRef,
+    private barcodeScanner: BarcodeScanner) {
 
     this.afAuth.authState.subscribe((auth) => {
       if (auth) {
@@ -53,7 +60,7 @@ export class ListsPage {
       }
     });
 
-    
+
 
     this.userID = navParams.data.userID;
 
@@ -72,29 +79,51 @@ export class ListsPage {
 
 
   }
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      position: 'top'
+    });
 
-
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  }
   ionViewDidLoad() {
 
   }
   selectList(list) {
 
-    this.navCtrl.push('TodosPage', {listUuid: list.uuid, userID: this.userID});
+    this.navCtrl.push('TodosPage', { listUuid: list.uuid, userID: this.userID });
   }
 
-  addList() {
-    let addModal = this.modalCtrl.create('AddListPage');
+  addList(type) {
 
 
-    addModal.onDidDismiss((list) => {
-      if (list) {
-        console.log('on dismiss add item :' + list);
-        this.todoService.addTodoList(list, this.userID);
-      }
+    switch (type) {
+      case "speachRecognition":
+        this.startListening();
+        break;
+      case "qrCode":
+        this.scanQrCode();
+        break;
+      default:
+        let addModal = this.modalCtrl.create('AddListPage');
 
-    });
 
-    addModal.present();
+        addModal.onDidDismiss((list) => {
+          if (list) {
+            console.log('on dismiss add item :' + list);
+            this.todoService.addTodoList(list, this.userID);
+          }
+
+        });
+
+        addModal.present();
+    }
+
+
   }
 
   edit(list) {
@@ -164,37 +193,40 @@ export class ListsPage {
     confirm.present();
 
   }
-  failNFCMsg(err) {
-    console.log("")
-  }
-  addNFCListener(onSuccess, onError) {
-    this.nfc.enabled()
-      .then(() => {
+  // failNFCMsg(err) {
+  //   console.log("")
+  // }
+  // addNFCListener(/*onSuccess, onError*/) {
+  //   this.nfc.enabled()
+  //     .then(() => {
 
-        this.nfc.addNdefListener(() => {
-          console.log('successfully attached ndef listener');
-          onSuccess;
+  //       this.nfc.addNdefListener(() => {
+  //         console.log('successfully attached ndef listener');
+  //         this.presentToast('successfully attached ndef listener')
+  //         // onSuccess;
 
-        }, (err) => {
-          console.log('error attaching ndef listener', err);
-          onError;
-        }).subscribe((event) => {
-          console.log('received ndef message. the tag contains: ', event.tag);
-          console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
+  //       }, (err) => {
+  //         console.log('error attaching ndef listener', err);
+  //         this.presentToast('error attaching ndef listener'+ err)
+  //         // onError;
+  //       }).subscribe((event) => {
+  //         this.presentToast('received ndef message. the tag contains: '+ this.nfc.bytesToHexString(event.tag.id))
+  //         console.log('received ndef message. the tag contains: ', event.tag);
+  //         console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
 
-          let message = this.ndef.textRecord('Hello world', "fr-FR", event.tag.id);
-          this.nfc.share([message]).then(onSuccess).catch(onError);
-        });
+  //         let message = this.ndef.textRecord('Hello world', "fr-FR", event.tag.id);
+  //         // this.nfc.share([message]).then(onSuccess).catch(onError);
+  //       });
 
-      }).catch(err => {
-        this.failNFCMsg(err)
-        this.nfc.showSettings();
+  //     }).catch(err => {
+  //       this.failNFCMsg(err)
+  //       this.nfc.showSettings();
 
-      })
+  //     })
 
-  }
+  // }
 
-}
+  // }
   // presentActionSheet() {
   //   let actionSheet = this.actionSheetCtrl.create({
   //     title: 'Add new list',
@@ -220,5 +252,51 @@ export class ListsPage {
   // }
 
 
+  private getPermission() {
+    this.speechRecognition.hasPermission()
+      .then((hasPermission: boolean) => {
+        if (!hasPermission) {
+          this.speechRecognition.requestPermission().then(
+            () => this.presentToast('Granted'),
+            () => this.presentToast('Denied')
+          );
+        } else {
+          this.presentToast('has permission');
+        }
+      });
+  }
+  private startListening() {
+    let options = {
+      language: 'fr-FR'
+    }
 
+    //get permission 
+    this.getPermission();
+    this.speechRecognition.startListening(options).subscribe(matches => {
 
+      let list: TodoList = {
+        uuid: "",
+        name: matches[1],
+        items: []
+      };
+      if (list) {
+        this.todoService.addTodoList(list, this.userID);
+      }
+
+      this.cd.detectChanges();
+
+    }, error => this.presentToast(error));
+  }
+
+  private scanQrCode() {
+    this.barcodeScanner.scan().then(barcodeData => {
+      console.log('Barcode data', barcodeData.text);
+     }).catch(err => {
+         console.log('Error', err);
+     });
+  }
+
+  private generateQrCode(liste){
+       this.barcodeScanner.encode("TEXT_TYPE", liste.uuid);
+  }
+}

@@ -64,14 +64,17 @@ export class TodosPage {
   }
 
   viewTodo(todo) {
-    let editModal = this.modalCtrl.create('ViewTodoPage', { todo: todo });
+    // let editModal = 
+    this.navCtrl.push('ViewTodoPage', { todo: todo });
 
-    editModal.onDidDismiss((todo) => {
-      if (todo) {
-        this.editTodo(todo);
-      }
-    });
-    editModal.present();
+    // editModal.onDidDismiss((todo) => {
+    //   if (todo) {
+    //     this.editTodo(todo);
+    //   }
+    // });
+    // editModal.present();
+
+    
   }
 
   deleteTodo(todo) {

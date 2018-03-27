@@ -4,8 +4,9 @@ import {TodoItem} from "../../models/model";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import { FileChooser } from "@ionic-native/file-chooser";
 import { FilePath } from "@ionic-native/file-path";
-import firebase from "firebase";
+import { ToastController } from 'ionic-angular';
 
+import firebase from "firebase";
 /**
  * Generated class for the ViewTodoPage page.
  *
@@ -25,20 +26,35 @@ export class ViewTodoPage {
   nativepath: any;
   firestore = firebase.storage();
   imgsource: any;
-
+err;
   constructor(public navParams: NavParams, 
     public view: ViewController, 
     public todoService: TodoServiceProvider,
     private fileChooser: FileChooser,
-    public zone: NgZone){
+    public zone: NgZone,
+    private toastCtrl: ToastController
+  ){
   }
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      position: 'top'
+    });
 
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  }
   ionViewDidLoad() {
+    this.presentToast("todos")
     this.name = this.navParams.data.todo.name;
     this.complete = this.navParams.data.todo.complete;
     this.uuid = this.navParams.data.todo.uuid;
   }
-
+  ngOnInit(){
+    // this.displayImage();
+  }
   changeTodoStatus() {
     this.complete = ! this.complete;
   }
@@ -54,30 +70,38 @@ export class ViewTodoPage {
   }
 //images
 addImage() {
+ this.presentToast("addImage");
+  
   this.fileChooser.open().then(url => {
     (<any>window).FilePath.resolveNativePath(url, result => {
       this.nativepath = result;
+      this.presentToast(result);
+      
       this.uploadImage();
     });
   });
 }
 
 uploadImage() {
+  this.presentToast("uploadImage");
+  
   (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
     res.file(resFile => {
       var reader = new FileReader();
       reader.readAsArrayBuffer(resFile);
       reader.onloadend = (evt: any) => {
-        var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
+        var imgBlob = new Blob([evt.target.result], { type: "image/jpg" });
         var imageStore = this.firestore.ref().child(this.uuid);
         imageStore
           .put(imgBlob)
           .then(res => {
-            // this.showToast("upload sucess", "bottom");
+            this.presentToast("upload sucess")
             this.displayImage();
           })
           .catch(err => {
+            this.presentToast("Upload Failed")
             alert("Upload Failed" + err);
+            this.err=err
           });
       };
     });
@@ -85,14 +109,14 @@ uploadImage() {
 }
 
 displayImage() {
-  // this.showToast(this.itemData.uuid, 'top')
+  this.presentToast("this.uuid")
   this.firestore
     .ref()
     .child(this.uuid)
     .getDownloadURL()
     .then(url => {
       this.zone.run(() => {
-        // this.showToast("image uploaded", "bottom");
+        this.presentToast("image uploaded")
         this.imgsource = url;
       });
     });

@@ -20,6 +20,9 @@ import { ToolProvider } from '../providers/tool/tool';
 import { FilePath } from '@ionic-native/file-path';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { GooglePlus } from '@ionic-native/google-plus';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+
+
 @NgModule({
   declarations: [
     MyApp
@@ -47,7 +50,8 @@ import { GooglePlus } from '@ionic-native/google-plus';
     ToolProvider,
     FileChooser,
     FilePath,
-    GooglePlus
+    GooglePlus,
+    BarcodeScanner
   ]
 })
 export class AppModule {}

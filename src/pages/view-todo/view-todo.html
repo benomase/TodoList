@@ -8,11 +8,27 @@
 
 <ion-content>
   <ion-card>
-    <ion-card-content (click) = "changeTodoStatus(complete)">
-      {{complete}}
-    </ion-card-content>
+  <!-- <img src="{{imgsource}}"/> -->
+  <ion-card-content>
+    <ion-card-title center>
+      {{name}}
+      </ion-card-title>
+    <p>
+      Need to add some description
+      {{err}}
+    </p>
+  </ion-card-content>
   </ion-card>
   <button full ion-button color="secondary" (click)="addImage()">Add image</button>
   
   <button full ion-button color="secondary" (click)="saveTodo()">Save</button>
 </ion-content>
+
+
+
+
+<!-- <ion-card>
+  <ion-card-content (click) = "changeTodoStatus(complete)">
+    {{complete}}
+  </ion-card-content>
+</ion-card> -->

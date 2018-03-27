@@ -3,10 +3,8 @@ import {AlertController, IonicPage, Loading, LoadingController, NavController, N
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ListsPage} from "../lists/lists";
 import * as firebase from "firebase/app";
-import AuthProvider = firebase.auth.AuthProvider;
 import {EmailValidator} from "../../validators/EmailValidator";
 import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
-import {AuthPage} from "../auth/auth";
 
 /**
  * Generated class for the SignupPage page.
