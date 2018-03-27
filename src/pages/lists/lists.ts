@@ -289,14 +289,55 @@ export class ListsPage {
   }
 
   private scanQrCode() {
+
     this.barcodeScanner.scan().then(barcodeData => {
       console.log('Barcode data', barcodeData.text);
-     }).catch(err => {
-         console.log('Error', err);
-     });
+      let resultListID = barcodeData.text.split("@")[0];
+      let resultTypeShare = barcodeData.text.split("@")[1];
+      if (resultTypeShare == "copie") {
+        alert("The list are shared as a copy")
+        console.log("The list are shared as a copy")
+      
+      } else if (resultTypeShare == "access") {
+      
+        console.log("The list are shared in read only")
+        this.todoService.shareTodoList(resultListID, this.userID);
+      
+      }
+      else {
+        alert()
+        console.log("No type of share in qrCode scanned")
+      }
+    }).catch(err => {
+      console.log('Error', err);
+    });
+
+
   }
 
-  private generateQrCode(liste){
-       this.barcodeScanner.encode("TEXT_TYPE", liste.uuid);
+  private generateQrCode(liste) {
+    let typeQr;
+    let confirm = this.alertCtrl.create({
+      title: 'Type de partage',
+      message: 'Comment voulez vous partager cette liste?',
+      buttons: [
+        {
+          text: 'Une copie',
+          handler: () => {
+            this.barcodeScanner.encode("TEXT_TYPE", liste.uuid + "@copie");
+          }
+        },
+        {
+          text: 'Lecture seule',
+          handler: () => {
+
+            this.barcodeScanner.encode("TEXT_TYPE", liste.uuid + "@access");
+          }
+        }
+      ]
+    });
+    confirm.present();
+
+
   }
 }
