@@ -14,7 +14,7 @@ export class ToolProvider {
   }
 
   removeSpecialCharacters(word :string): string {
-    return word.replace('@','').replace('.','');
+    return word.replace('@','').replace(/\./g,'');
   }
 
   uuidv4() {

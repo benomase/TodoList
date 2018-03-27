@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as firebase from "firebase/app";
 import { AngularFireAuth } from "angularfire2/auth";
 import { GooglePlus } from "@ionic-native/google-plus";
+import {ToolProvider} from "../tool/tool";
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -13,8 +14,10 @@ import { GooglePlus } from "@ionic-native/google-plus";
 @Injectable()
 export class AuthServiceProvider {
 
-  constructor(public afAuth: AngularFireAuth,
-    private googlePlus: GooglePlus) {
+  constructor(
+    public afAuth: AngularFireAuth,
+    private googlePlus: GooglePlus,
+    private toolProvider: ToolProvider) {
     console.log('Hello AuthServiceProvider Provider');
   }
 
@@ -54,7 +57,7 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child((result.user.email.replace('@', '')).replace(/\./g, ''))
+          .child(result.user.email)
           .set('email', result.user.email);
 
         resolve(result);
@@ -63,7 +66,7 @@ export class AuthServiceProvider {
       });
     });
   }
- 
+
   async loginGoogleNative(): Promise<any> {
     const googlePlusUser = await this.googlePlus.login({
       webClientId:
@@ -78,9 +81,8 @@ export class AuthServiceProvider {
         firebase
           .database()
           .ref('/users')
-          .child((googlePlusUser.email.replace('@', '')).replace(/\./g, ''))
+          .child(this.toolProvider.removeSpecialCharacters(googlePlusUser.email))
           .set('email', googlePlusUser.email);
-
         resolve(googlePlusUser.email);
       }
       ).catch((err) => {

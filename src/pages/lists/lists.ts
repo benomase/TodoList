@@ -55,29 +55,42 @@ export class ListsPage {
       } else {
         console.log("auth not ok");
         this.navCtrl.setPages([
-          { page: "AuthPage" }
+          {page: "AuthPage"}
         ]);
       }
     });
 
-
+    
 
     this.userID = navParams.data.userID;
-
 
     this.todoService.getTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
       this.todoLists = [];
       this.listsIds = listsIds;
       for (let listId in this.listsIds) {
         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
-          this.todoLists[listId] = list;
+          if(list)
+            this.todoLists[listId] = list;
           console.log('hh' + this.todoLists)
-
         });
       }
     });
 
+    const bannerConfig: AdMobFreeBannerConfig = {
+      // add your config here
+      // for the sake of this example we will just use the test config
+      isTesting: true,
+      autoShow: true
+    };
+    this.admobFree.banner.config(bannerConfig);
 
+    this.admobFree.banner.prepare()
+      .then(() => {
+        // banner Ad is ready
+        // if we set autoShow to false, then we will need to call the show method here
+      })
+      .catch(e => console.log(e));
+    //this.showBanner();
   }
   presentToast(message) {
     let toast = this.toastCtrl.create({
@@ -86,13 +99,10 @@ export class ListsPage {
       position: 'top'
     });
 
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-  }
   ionViewDidLoad() {
 
   }
+
   selectList(list) {
 
     this.navCtrl.push('TodosPage', { listUuid: list.uuid, userID: this.userID });
@@ -110,20 +120,42 @@ export class ListsPage {
         break;
       default:
         let addModal = this.modalCtrl.create('AddListPage');
-
-
-        addModal.onDidDismiss((list) => {
-          if (list) {
-            console.log('on dismiss add item :' + list);
-            this.todoService.addTodoList(list, this.userID);
-          }
-
+    addModal.onDidDismiss((list) => {
+      if (list) {
+        console.log('on dismiss add item :' + list);
+        this.todoService.addTodoList(list, this.userID).then((msg)=>{
+          let toast = this.toastCtrl.create({
+            message: msg,
+            duration: 3000,
+            position: 'top'
+          });
+          toast.present();
+        }).catch((msg)=>{
+          let toast = this.toastCtrl.create({
+            message: msg,
+            duration: 3000,
+            position: 'top'
+          });
+          toast.present();
         });
-
-        addModal.present();
-    }
+      }
 
 
+    const bannerConfig: AdMobFreeBannerConfig = {
+      // add your config here
+      // for the sake of this example we will just use the test config
+      isTesting: true,
+      autoShow: true
+    };
+    this.admobFree.banner.config(bannerConfig);
+
+    this.admobFree.banner.prepare()
+      .then(() => {
+        // banner Ad is ready
+        // if we set autoShow to false, then we will need to call the show method here
+      })
+      .catch(e => console.log(e));
+    //addModal.present();
   }
 
   edit(list) {
@@ -147,8 +179,21 @@ export class ListsPage {
         {
           text: 'Modifier',
           handler: data => {
-            console.log(JSON.stringify(data));
-            this.todoService.editTodoList(list.uuid, list, this.userID);
+            this.todoService.editTodoList(list.uuid, data.newName).then((msg)=>{
+              let toast = this.toastCtrl.create({
+                message: msg,
+                duration: 3000,
+                position: 'top'
+              });
+              toast.present();
+            }).catch((msg)=>{
+              let toast = this.toastCtrl.create({
+                message: msg,
+                duration: 3000,
+                position: 'top'
+              });
+              toast.present();
+            });
           }
         }
       ]
@@ -158,13 +203,26 @@ export class ListsPage {
 
   share(list) {
     console.log('Share a TodoList');
-    let addModal = this.modalCtrl.create('ShareListPage');
+    let addModal = this.modalCtrl.create('ShareListPage',{listUuid: list.uuid});
     addModal.onDidDismiss((email) => {
-      if (list) {
-        this.todoService.shareTodoList(list.uuid, this.toolProvider.removeSpecialCharacters(email));
+      if (list && email) {
+        this.todoService.shareTodoList(list.uuid, this.toolProvider.removeSpecialCharacters(email)).then((msg)=>{
+          let toast = this.toastCtrl.create({
+            message: msg,
+            duration: 3000,
+            position: 'top'
+          });
+          toast.present();
+        }).catch((err)=>{
+          let toast = this.toastCtrl.create({
+            message: err,
+            duration: 3000,
+            position: 'top'
+          });
+          toast.present();
+        });
       }
     });
-
 
     addModal.present();
   }
@@ -185,7 +243,21 @@ export class ListsPage {
         {
           text: 'Confirmer',
           handler: () => {
-            this.todoService.removeTodoList(list.uuid, this.userID);
+            this.todoService.removeTodoList(list.uuid, this.userID).then((msg)=>{
+              let toast = this.toastCtrl.create({
+                message: msg,
+                duration: 3000,
+                position: 'top'
+              });
+              toast.present();
+            }).catch((msg)=>{
+              let toast = this.toastCtrl.create({
+                message: msg,
+                duration: 3000,
+                position: 'top'
+              });
+              toast.present();
+            });
           }
         }
       ]
@@ -226,7 +298,7 @@ export class ListsPage {
 
   // }
 
-  // }
+}
   // presentActionSheet() {
   //   let actionSheet = this.actionSheetCtrl.create({
   //     title: 'Add new list',
@@ -237,20 +309,29 @@ export class ListsPage {
   //         handler: () => {
   //           console.log('Add clicked');
 
-  //           this.addList();
-  //         }
-  //       }, {
-  //         text: 'Add using speach recognition',
-  //         handler: () => {
-  //           console.log('speach recognition clicked');
-  //          // this.addListWithSpeachRecognition();
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   actionSheet.present();
-  // }
+// presentActionSheet() {
+//   let actionSheet = this.actionSheetCtrl.create({
+//     title: 'Add new list',
+//     buttons: [
+//       {
+//         text: 'Add',
+//         role: 'Add',
+//         handler: () => {
+//           console.log('Add clicked');
 
+//           this.addList();
+//         }
+//       }, {
+//         text: 'Add using speach recognition',
+//         handler: () => {
+//           console.log('speach recognition clicked');
+//          // this.addListWithSpeachRecognition();
+//         }
+//       }
+//     ]
+//   });
+//   actionSheet.present();
+// }
 
   private getPermission() {
     this.speechRecognition.hasPermission()

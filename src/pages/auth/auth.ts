@@ -41,7 +41,7 @@ export class AuthPage {
   tempList: AngularFireList<any>;
   waitingListsIds: any;
   notificationCount: number;
- 
+
   constructor(public navCtrl: NavController,
     public todoService: TodoServiceProvider,
     public formBuilder: FormBuilder,
@@ -73,8 +73,6 @@ export class AuthPage {
 
   ionViewDidLoad() {
   }
-
-
 
   loginUser(): void {
     if (!this.loginForm.valid) {
@@ -144,7 +142,7 @@ export class AuthPage {
       });
   }
 
-  
+
 
   accessToMyTodoList() {
     // console.log(this.user.userUuid)
@@ -154,5 +152,5 @@ export class AuthPage {
   notifications() {
     this.navCtrl.push('NotificationsPage', { userID: this.userID });
   }
-  
+
 }

@@ -6,6 +6,8 @@ import {Observable} from "rxjs/Observable";
 import {FirebaseListObservable} from "angularfire2/database-deprecated";
 import "firebase/app";
 import { Injectable } from "@angular/core";
+import * as Firebase from "firebase";
+import {FirebaseApp} from "angularfire2";
 
 /*
   Generated class for the TodoServiceProvider provider.
@@ -17,7 +19,7 @@ import { Injectable } from "@angular/core";
 export class TodoServiceProvider {
   data: Observable<any[]>;
 
-  constructor(public db: AngularFireDatabase) {
+  constructor(public db: AngularFireDatabase, public firebase : FirebaseApp) {
   }
 
   /**
@@ -42,29 +44,23 @@ export class TodoServiceProvider {
     return this.db.object(`/lists/${listUuid}`).valueChanges();
   }
 
-  public getTodoMyLists() {
-    //TODO
-  }
-
-  public getTodoSharedLists() {
-    //TODO
-  }
-
   /**
    * ADD LIST ID TO USER
    */
-
-  public addTodoListId(listUuid: string, userID: string) {
-    //this.db.object(`/users/${userID}/lists/${listUuid}`).set(listUuid);
-    this.db.list(`/users/${userID}/lists`).push(listUuid);
+  public addTodoListId(listUuid: string, userID: string) : Promise<any>{
+    return this.db.object(`/users/${userID}/lists/${listUuid}`).set(listUuid);
   }
 
   /**
    * ADD LIST TO LISTS
    */
-  public addTodoListObject(list: TodoList) {
+  public addTodoListObject(list: TodoList, userID: string)
+  {
     let ref = this.db.list(`/lists`).push({});
     list.uuid = ref.key;
+    list.instances = 1;
+    list.users = [];
+    list.users[userID] = userID;
     ref.set(list);
     return ref.key;
   }
@@ -75,55 +71,84 @@ export class TodoServiceProvider {
    * @param {string} userID
    */
 
-  public addTodoList(list: TodoList, userID: string) {
-    let listUuid = this.addTodoListObject(list);
-    this.addTodoListId(listUuid, userID);
-
+  public addTodoList(list: TodoList, userID: string) : Promise<any>{
+    return new Promise((resolve,reject) => {
+      let listUuid = this.addTodoListObject(list, userID);
+      this.addTodoListId(listUuid, userID).then(()=>{
+        resolve('La liste a été ajouté avec succès');
+      }).catch((err)=>{
+        reject(err)
+      });
+    });
   }
 
   public getTodos(listUuid: string): Observable<any> {
     return this.db.list(`/lists/${listUuid}/items`).valueChanges();
   }
 
-  /**
-   * Add funciton
-   */
-
-  public addTodo(listUuid: string, newItem: TodoItem) {
+  public addTodo(listUuid: string, newItem: TodoItem) : Promise<any>{
     let ref = this.db.list(`/lists/${listUuid}/items`).push({});
     newItem.uuid = ref.key;
-    ref.set(newItem);
+    return ref.set(newItem);
   }
 
-  public editTodo(listUuid: string, editedItem: TodoItem, userID: string) {
-    this.db.object(`/lists/${listUuid}/items/${editedItem.uuid}`).set(editedItem);
+  public editTodo(listUuid: string,todoUuid: string, newName: string): Promise<any> {
+    return this.db.object(`/lists/${listUuid}/items/${todoUuid}/name`).set(newName);
   }
 
-  public editTodoList(listUuid: string, editedList: TodoList, userID: string) {
-    this.db.object(`/${userID}/lists/${listUuid}`).set(editedList);//a voir avec firebase
-
+  public editTodoList(listUuid: string, newName: string) : Promise<any>{
+    return this.db.object(`/lists/${listUuid}/name`).set(newName);
   }
 
-  public removeTodoList(listUuid: string, userID: string) {
-    this.db.object(`/users/${userID}/lists/${listUuid}`).remove();//a voir avec firebase
-    this.db.object(`/lists/${listUuid}`).remove();
+  public removeTodoList(listUuid: string, userID: string) : Promise<any>{
+   return this.firebase.database().ref(`/lists/${listUuid}`).once('value').then((snapshot)=>{
+      this.db.object(`/users/${userID}/lists/${listUuid}`).remove();
+      if(snapshot.val().instances<=1){
+        this.db.object(`/lists/${listUuid}`).remove();
+      }
+      else {
+        this.db.object(`/lists/${listUuid}/instances`).set(--snapshot.val().instances);
+        this.db.object(`/lists/${listUuid}/users/${userID}`).remove();
+      }
+    });
   }
 
-  public removeTodo(listUuid: string, todoUuid: string, userID: string) {
-    this.db.object(`/lists/${listUuid}/items/${todoUuid}`).remove();
+  public removeTodo(listUuid: string, todoUuid: string, userID: string) : Promise<any>{
+    return this.db.object(`/lists/${listUuid}/items/${todoUuid}`).remove();
   }
 
-  public shareTodoList(listUuid: string, userID: string) {
-    this.db.list(`/users/${userID}/w-lists`).set(listUuid, listUuid);
+  public shareTodoList(listUuid: string, userID: string): Promise<any> {
+    return new Promise<any>((resolve,reject)=>{
+      this.firebase.database().ref(`/users/${userID}`).once("value").then((snapshot)=>{
+        if(snapshot.val()) {
+          this.db.list(`/users/${userID}/w-lists`).set(listUuid, listUuid);
+          resolve('La liste a été partagée avec succès');
+        }
+        else {
+          reject("L'email n'as pas été trouvé dans nos bases de données");
+        }
+
+      }).catch(()=>{
+        reject('Probleme de communication avec la base de donnée, veuillez réessayé plutard');
+      });
+    });
   }
 
   acceptTodoListSharing(listUuid: string, userID: string) {
-    this.db.object(`/users/${userID}/w-lists/${listUuid}`).remove();
-    this.db.list(`/users/${userID}/lists/`).set(listUuid, listUuid);
+    this.firebase.database().ref(`/lists/${listUuid}`).once('value').then((snapshot)=>{
+      this.db.object(`/lists/${listUuid}/instances`).set(++snapshot.val().instances);
+      this.db.list(`/lists/${listUuid}/users`).set(userID,userID);
+      this.db.object(`/users/${userID}/w-lists/${listUuid}`).remove();
+      this.db.list(`/users/${userID}/lists`).set(listUuid, listUuid);
+    });
   }
 
   declineTodoListSharing(listUuid: string, userID: string) {
     this.db.object(`/users/${userID}/w-lists/${listUuid}`).remove();
+  }
+
+  getSharedPeopleForList(listUuid: string) : Observable<any>{
+    return this.db.list(`/lists/${listUuid}/users`).valueChanges();
   }
 
 }
