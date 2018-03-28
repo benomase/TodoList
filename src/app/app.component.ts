@@ -26,11 +26,16 @@ export class MyApp {
       splashScreen.hide();
     });
   }
+  /*
+  *TODO: get userid and send it in the navParam
+  */
   goToHomePage() {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
+   
     this.nav.push('AuthPage');
   }
+   /*
+  *TODO: get userid and send it in the navParam
+  */
   GoToListsPage(){
     this.nav.push('ListsPage');
   }
