@@ -168,7 +168,6 @@ export class ListsPage {
     addModal.present();
   }
 
-
   remove(list) {
     console.log('remove list');
     let confirm = this.alertCtrl.create({
@@ -311,12 +310,12 @@ export class ListsPage {
       if (resultTypeShare == "copie") {
         alert("The list are shared as a copy")
         console.log("The list are shared as a copy")
-      
+
       } else if (resultTypeShare == "access") {
-      
+
         console.log("The list are shared in read only")
         this.todoService.shareTodoList(resultListID, this.userID);
-      
+
       }
       else {
         alert()
