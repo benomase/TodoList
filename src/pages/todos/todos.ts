@@ -7,6 +7,7 @@ import {AngularFireList} from "angularfire2/database";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {AddTodoPage} from "../add-todo/add-todo";
 import {ViewTodoPage} from "../view-todo/view-todo";
+import {ToolProvider} from "../../providers/tool/tool";
 
 /**
  * Generated class for the TodosPage page.
@@ -23,6 +24,7 @@ import {ViewTodoPage} from "../view-todo/view-todo";
 export class TodosPage {
   listUuid: string;
   userID: string;
+  listName: string;
   todos: AngularFireList<any>;
 
 
@@ -31,11 +33,12 @@ export class TodosPage {
               public todoService: TodoServiceProvider,
               public alertCtrl: AlertController,
               public modalCtrl: ModalController,
-              public toastCtrl: ToastController) {
+              public toastCtrl: ToastController,
+              public toolProvider: ToolProvider) {
 
     this.listUuid = this.navParams.data.listUuid;
     this.userID = this.navParams.data.userID;
-
+    this.listName = this.navParams.data.listName;
     this.todoService.getTodos(this.listUuid).subscribe((todos: AngularFireList<any>) => {
 
       this.todos = todos;
@@ -59,19 +62,9 @@ export class TodosPage {
 
   saveTodo(todo) {
     this.todoService.addTodo(this.listUuid, todo).then((msg) => {
-      let toast = this.toastCtrl.create({
-        message: msg,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+      this.toolProvider.showToast(msg);
     }).catch((msg) => {
-      let toast = this.toastCtrl.create({
-        message: msg,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+      this.toolProvider.showToast(msg);
     });
   }
 
@@ -96,19 +89,9 @@ export class TodosPage {
           text: 'Modifier',
           handler: data => {
             this.todoService.editTodo(this.listUuid, todo.uuid, data.newName).then((msg) => {
-              let toast = this.toastCtrl.create({
-                message: msg,
-                duration: 3000,
-                position: 'top'
-              });
-              toast.present();
+              this.toolProvider.showToast(msg);
             }).catch((msg) => {
-              let toast = this.toastCtrl.create({
-                message: msg,
-                duration: 3000,
-                position: 'top'
-              });
-              toast.present();
+              this.toolProvider.showToast(msg);
             });
           }
         }
@@ -119,15 +102,12 @@ export class TodosPage {
 
   viewTodo(todo) {
     let editModal = this.modalCtrl.create('ViewTodoPage', {todo: todo});
-
-    // editModal.onDidDismiss((todo) => {
-    //   if (todo) {
-    //     this.editTodo(todo);
-    //   }
-    // });
-    // editModal.present();
-
-    
+    editModal.onDidDismiss((todo) => {
+      if (todo) {
+        this.editTodo(todo);
+      }
+    });
+    editModal.present();
   }
 
   deleteTodo(todo) {
@@ -146,12 +126,7 @@ export class TodosPage {
           handler: () => {
             console.log('Confirmer');
             this.todoService.removeTodo(this.listUuid, todo.uuid, this.userID).then((msg) => {
-              let toast = this.toastCtrl.create({
-                message: msg,
-                duration: 3000,
-                position: 'top'
-              });
-              toast.present();
+              this.toolProvider.showToast(msg);
             });
           }
         }

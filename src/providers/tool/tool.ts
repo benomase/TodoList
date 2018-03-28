@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {ToastController} from "ionic-angular";
 
 /*
   Generated class for the ToolProvider provider.
@@ -9,8 +10,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ToolProvider {
 
-  constructor() {
-    console.log('Hello ToolProvider Provider');
+  constructor(public toastCtrl : ToastController) {
+
   }
 
   removeSpecialCharacters(word :string): string {
@@ -23,5 +24,13 @@ export class ToolProvider {
       return v.toString(16);
     });
   }
-  
+
+  showToast(msg: string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'top'
+    });
+    toast.present();
+  }
 }

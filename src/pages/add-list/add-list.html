@@ -14,17 +14,13 @@
     <!-- <ion-buttons end>
       <button ion-button icon-only  (click)="startListening()">
         <ion-icon [name]="isRecording ? 'mic' :'mic-off'"></ion-icon>
-        
       </button>
     </ion-buttons> -->
     <ion-item>
       <ion-label floating>Name</ion-label>
       <ion-input type="text" [(ngModel)]="name">{{name}}</ion-input>
     </ion-item>
-
   </ion-list>
-
   <button full ion-button color="secondary" (click)="saveList()">Save</button>
-
 </ion-content>
 

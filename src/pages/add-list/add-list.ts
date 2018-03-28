@@ -28,9 +28,7 @@ export class AddListPage {
     private cd: ChangeDetectorRef,
     private toastCtrl: ToastController
   ) {
-    console.log(this.navParams.get("name"));
     this.name = this.navParams.get("name");
-
   }
 
   ionViewDidLoad() {
@@ -69,10 +67,10 @@ export class AddListPage {
 
     let options = {
       language: 'fr-FR'
-    }
+    };
     // if (!this.isRecording) {
 
-      //get permission 
+      //get permission
       this.getPermission();
       this.speechRecognition.startListening(options).subscribe(matches => {
 

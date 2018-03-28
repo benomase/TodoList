@@ -3,8 +3,8 @@
     <button ion-button menuToggle icon-only float-right>
           <ion-icon name="menu"></ion-icon>
         </button>
-    <ion-title>
-      Todos!
+    <ion-title text-center="true">
+      Taches de la liste "{{listName}}"
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="addTodo()"><ion-icon name="add-circle"></ion-icon></button>
@@ -15,15 +15,12 @@
 <ion-content>
   <ion-list>
     <ion-item-sliding *ngFor="let todo of todos" #item>
-
-
       <ion-item (click)="viewTodo(todo)">
         {{todo.name}}
       </ion-item>
       <ion-item-options side="left">
         <button ion-button color="danger" (click)="deleteTodo(todo)">REMOVE</button>
       </ion-item-options>
-
       <ion-item-options side="right">
         <button ion-button (click)="editTodo(todo)">EDIT</button>
       </ion-item-options>
