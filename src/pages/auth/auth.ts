@@ -23,8 +23,6 @@ import {AngularFireList} from "angularfire2/database";
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-
 @IonicPage()
 @Component({
   selector: 'page-auth',
@@ -36,9 +34,12 @@ export class AuthPage {
   public loading: Loading;
   userID: string;
   waitingTodoLists: any;
-  tempList: AngularFireList<any>;
   waitingListsIds: any;
-  notificationCount: number;
+
+  pendingCount: string = "";
+  doneCount: string;
+  todoListsIds: any = [];
+  stats: AngularFireList<any>;
 
   constructor(public navCtrl: NavController,
               public todoService: TodoServiceProvider,
@@ -63,13 +64,13 @@ export class AuthPage {
         Validators.compose([Validators.minLength(6), Validators.required])]
     });
 
-
-    if(this.navParams.data.userID)
+    if (this.navParams.data.userID)
       this.accessGranted(this.navParams.data.userID);
 
     this.waitingTodoLists = [];
     this.waitingListsIds = [];
   }
+
 
   getState() {
     return this.authProvider.getState();
@@ -122,11 +123,21 @@ export class AuthPage {
       this.waitingListsIds = listsIds;
     });
 
+    /*
+    this.todoService.getTodoListsIds(this.userID).subscribe((lists)=>{
+      this.todoListsIds = lists;
+    });
+
+    this.todoService.getStats(this.userID).subscribe((stats: AngularFireList<any>)=>{
+      this.toolProvider.showToast(JSON.stringify(stats));
+      this.stats = stats;
+    });
+    */
     this.events.publish('login',this.userID);
   }
 
   logout() {
-    this.authProvider.logoutUser();
+    this.authProvider.logout();
   }
 
   goToLoginGoogle(): void {

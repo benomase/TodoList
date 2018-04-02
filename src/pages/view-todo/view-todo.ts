@@ -1,12 +1,14 @@
-import { Component,NgZone } from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
 import {TodoItem} from "../../models/model";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import { FileChooser } from "@ionic-native/file-chooser";
-import { FilePath } from "@ionic-native/file-path";
-import { ToastController } from 'ionic-angular';
+import {FileChooser} from "@ionic-native/file-chooser";
+import {FilePath} from "@ionic-native/file-path";
+import {ToastController} from 'ionic-angular';
 
 import firebase from "firebase";
+import {ToolProvider} from "../../providers/tool/tool";
+
 /**
  * Generated class for the ViewTodoPage page.
  *
@@ -20,105 +22,79 @@ import firebase from "firebase";
   templateUrl: 'view-todo.html',
 })
 export class ViewTodoPage {
-  name;
-  complete;
-  uuid;
+  todo: TodoItem;
   nativepath: any;
   firestore = firebase.storage();
   imgsource: any;
-err;
-  constructor(public navParams: NavParams, 
-    public view: ViewController, 
-    public todoService: TodoServiceProvider,
-    private fileChooser: FileChooser,
-    public zone: NgZone,
-    private toastCtrl: ToastController
-  ){
-  }
-  presentToast(message) {
-    let toast = this.toastCtrl.create({
-      message: message,
-      duration: 3000,
-      position: 'top'
-    });
+  err;
 
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-  }
-  ionViewDidLoad() {
-    this.presentToast("todos")
-    this.name = this.navParams.data.todo.name;
-    this.complete = this.navParams.data.todo.complete;
-    this.uuid = this.navParams.data.todo.uuid;
-  }
-  ngOnInit(){
-    // this.displayImage();
-  }
-  changeTodoStatus() {
-    this.complete = ! this.complete;
+  constructor(public navParams: NavParams,
+              public view: ViewController,
+              public todoService: TodoServiceProvider,
+              private fileChooser: FileChooser,
+              public zone: NgZone,
+              private toastCtrl: ToastController,
+              public toolProvider: ToolProvider) {
+    this.todo = this.navParams.data.todo;
   }
 
-  saveTodo (){
-    let todo : TodoItem = {
-      name: this.name
-      , complete: this.complete
-      , uuid: this.uuid
-    };
-
-    this.view.dismiss(todo);
+  markasdone() {
+    this.todo.complete = !this.todo.complete;
   }
-//images
-addImage() {
- this.presentToast("addImage");
-  
-  this.fileChooser.open().then(url => {
-    (<any>window).FilePath.resolveNativePath(url, result => {
-      this.nativepath = result;
-      this.presentToast(result);
-      
-      this.uploadImage();
-    });
-  });
-}
 
-uploadImage() {
-  this.presentToast("uploadImage");
-  
-  (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
-    res.file(resFile => {
-      var reader = new FileReader();
-      reader.readAsArrayBuffer(resFile);
-      reader.onloadend = (evt: any) => {
-        var imgBlob = new Blob([evt.target.result], { type: "image/jpg" });
-        var imageStore = this.firestore.ref().child(this.uuid);
-        imageStore
-          .put(imgBlob)
-          .then(res => {
-            this.presentToast("upload sucess")
-            this.displayImage();
-          })
-          .catch(err => {
-            this.presentToast("Upload Failed")
-            alert("Upload Failed" + err);
-            this.err=err
-          });
-      };
-    });
-  });
-}
+  saveTodo() {
+    this.view.dismiss(this.todo);
+  }
 
-displayImage() {
-  this.presentToast("this.uuid")
-  this.firestore
-    .ref()
-    .child(this.uuid)
-    .getDownloadURL()
-    .then(url => {
-      this.zone.run(() => {
-        this.presentToast("image uploaded")
-        this.imgsource = url;
+  addImage() {
+    this.toolProvider.showToast("addImage");
+
+    this.fileChooser.open().then(url => {
+      (<any>window).FilePath.resolveNativePath(url, result => {
+        this.nativepath = result;
+        this.toolProvider.showToast(result);
+
+        this.uploadImage();
       });
     });
-}
+  }
+
+  uploadImage() {
+    this.toolProvider.showToast("uploadImage");
+    (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
+      res.file(resFile => {
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(resFile);
+        reader.onloadend = (evt: any) => {
+          var imgBlob = new Blob([evt.target.result], {type: "image/jpg"});
+          var imageStore = this.firestore.ref().child(this.todo.uuid);
+          imageStore
+            .put(imgBlob)
+            .then(res => {
+              this.toolProvider.showToast("upload sucess")
+              this.displayImage();
+            })
+            .catch(err => {
+              this.toolProvider.showToast("Upload Failed")
+              alert("Upload Failed" + err);
+              this.err = err
+            });
+        };
+      });
+    });
+  }
+
+  displayImage() {
+    this.toolProvider.showToast("this.uuid")
+    this.firestore
+      .ref()
+      .child(this.todo.uuid)
+      .getDownloadURL()
+      .then(url => {
+        this.zone.run(() => {
+          this.toolProvider.showToast("image uploaded")
+          this.imgsource = url;
+        });
+      });
+  }
 }

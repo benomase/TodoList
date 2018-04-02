@@ -1,14 +1,12 @@
 import {Component} from '@angular/core';
 import {
-  Alert, AlertCmp, AlertController, IonicPage, ModalController, NavController, NavParams,
+  AlertController, IonicPage, ModalController, NavController, NavParams, PopoverController,
   ToastController
 } from 'ionic-angular';
 import {AngularFireList} from "angularfire2/database";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import {AddTodoPage} from "../add-todo/add-todo";
-import {ViewTodoPage} from "../view-todo/view-todo";
 import {ToolProvider} from "../../providers/tool/tool";
-
+import firebase from "firebase";
 /**
  * Generated class for the TodosPage page.
  *
@@ -26,7 +24,8 @@ export class TodosPage {
   userID: string;
   listName: string;
   todos: AngularFireList<any>;
-
+  firestore = firebase.storage();
+  displayMethod: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -34,7 +33,8 @@ export class TodosPage {
               public alertCtrl: AlertController,
               public modalCtrl: ModalController,
               public toastCtrl: ToastController,
-              public toolProvider: ToolProvider) {
+              public toolProvider: ToolProvider,
+              public popOverCtr : PopoverController) {
 
     this.listUuid = this.navParams.data.listUuid;
     this.userID = this.navParams.data.userID;
@@ -43,6 +43,7 @@ export class TodosPage {
 
       this.todos = todos;
     });
+    this.displayMethod='all';
   }
 
   ionViewDidLoad() {
@@ -53,19 +54,11 @@ export class TodosPage {
     let addModal = this.modalCtrl.create('AddTodoPage');
     addModal.onDidDismiss((todo) => {
       if (todo) {
-        this.saveTodo(todo);
+        this.todoService.addTodo(this.listUuid,todo);
       }
     });
 
     addModal.present();
-  }
-
-  saveTodo(todo) {
-    this.todoService.addTodo(this.listUuid, todo).then((msg) => {
-      this.toolProvider.showToast(msg);
-    }).catch((msg) => {
-      this.toolProvider.showToast(msg);
-    });
   }
 
   editTodo(todo) {
@@ -88,7 +81,8 @@ export class TodosPage {
         {
           text: 'Modifier',
           handler: data => {
-            this.todoService.editTodo(this.listUuid, todo.uuid, data.newName).then((msg) => {
+            todo.name = data.newName;
+            this.todoService.editTodo(this.listUuid, todo).then((msg) => {
               this.toolProvider.showToast(msg);
             }).catch((msg) => {
               this.toolProvider.showToast(msg);
@@ -100,8 +94,8 @@ export class TodosPage {
     prompt.present();
   }
 
-  viewTodo(todo) {
-    let editModal = this.modalCtrl.create('ViewTodoPage', {todo: todo});
+  /*viewTodo(todo) {
+    let editModal = this.modalCtrl.create('ViewTodoPage', {todo: todo, listUuid: this.listUuid});
     editModal.onDidDismiss((todo) => {
       if (todo) {
         this.editTodo(todo);
@@ -109,6 +103,7 @@ export class TodosPage {
     });
     editModal.present();
   }
+*/
 
   deleteTodo(todo) {
     let alert = this.alertCtrl.create({
@@ -135,5 +130,67 @@ export class TodosPage {
     alert.present();
   }
 
+  markasdone(todo) {
+    todo.complete = !todo.complete;
+    this.todoService.editTodo(this.listUuid,todo);
+  //  this.todoService.incrementDoneTodoStats(this.userID);
+  }
+
+  setDisplayMethod(method) {
+    this.displayMethod = method;
+  }
+
+  /*
+  addImage() {
+    this.toolProvider.showToast("addImage");
+
+    this.fileChooser.open().then(url => {
+      (<any>window).FilePath.resolveNativePath(url, result => {
+        this.nativepath = result;
+        this.toolProvider.showToast(result);
+
+        this.uploadImage(todo);
+      });
+    });
+  }
+
+  uploadImage(todo) {
+    this.toolProvider.showToast("uploadImage");
+    (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
+      res.file(resFile => {
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(resFile);
+        reader.onloadend = (evt: any) => {
+          var imgBlob = new Blob([evt.target.result], {type: "image/jpg"});
+          var imageStore = this.firestore.ref().child(this.todo.uuid);
+          imageStore
+            .put(imgBlob)
+            .then(res => {
+              this.toolProvider.showToast("upload sucess")
+              this.displayImage();
+            })
+            .catch(err => {
+              this.toolProvider.showToast("Upload Failed")
+              alert("Upload Failed" + err);
+              this.err = err
+            });
+        };
+      });
+    });
+  }
+
+  displayImage(todo) {
+    this.toolProvider.showToast("this.uuid")
+    this.firestore
+      .ref()
+      .child(this.todo.uuid)
+      .getDownloadURL()
+      .then(url => {
+        this.zone.run(() => {
+          this.toolProvider.showToast("image uploaded")
+          this.imgsource = url;
+        });
+      });
+  }*/
 
 }

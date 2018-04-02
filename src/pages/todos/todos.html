@@ -1,22 +1,50 @@
 <ion-header>
-  <ion-navbar color="secondary" hideBackButton="true">
+  <ion-navbar color="primary" hideBackButton="true">
     <button ion-button menuToggle icon-only float-right>
-          <ion-icon name="menu"></ion-icon>
-        </button>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title text-center="true">
       Taches de la liste "{{listName}}"
     </ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="addTodo()"><ion-icon name="add-circle"></ion-icon></button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
-
 <ion-content>
+  <ion-buttons>
+    <button *ngIf="displayMethod!=='all'" color="danger" ion-button (click)="setDisplayMethod('all')">Display All</button>
+    <button *ngIf="displayMethod!=='pending'" color="danger" ion-button (click)="setDisplayMethod('pending')">Display Pending Only</button>
+  </ion-buttons>
+  <ion-fab bottom right>
+    <button ion-fab (click)="addTodo()" color="secondary">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
   <ion-list>
     <ion-item-sliding *ngFor="let todo of todos" #item>
-      <ion-item (click)="viewTodo(todo)">
-        {{todo.name}}
+      <ion-item *ngIf="displayMethod=='all' || !todo.complete">
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title center>
+              {{todo.name}}
+            </ion-card-title>
+            <p>
+              Need to add some description
+            </p>
+            <div *ngIf="todo.complete; else notComplete">
+              <h3>
+                State: <span style="color: #009688">DONE</span>
+              </h3>
+            </div>
+            <ng-template #notComplete>
+              <h3>
+                State: <span style="color: #C62828">PENDING</span>
+              </h3>
+            </ng-template>
+            <ion-buttons>
+              <button *ngIf="!todo.complete;" ion-button color="danger" (click)="markasdone(todo)">Mark as Done</button>
+              <!--<button ion-button color="secondary" (click)="addImage()">Add image</button>-->
+            </ion-buttons>
+          </ion-card-content>
+        </ion-card>
       </ion-item>
       <ion-item-options side="left">
         <button ion-button color="danger" (click)="deleteTodo(todo)">REMOVE</button>

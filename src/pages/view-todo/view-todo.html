@@ -5,29 +5,28 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
-
 <ion-content>
   <ion-card>
-  <!-- <img src="{{imgsource}}"/> -->
   <ion-card-content>
     <ion-card-title center>
-      {{name}}
+      {{todo.name}}
       </ion-card-title>
     <p>
       Need to add some description
-      {{err}}
     </p>
+    <div *ngIf="todo.complete; else notComplete">
+      <h3>
+        State: <span style="color: #009688">DONE</span>
+      </h3>
+    </div>
+    <ng-template #notComplete>
+      <h3>
+        State: <span style="color: #C62828">PENDING</span>
+      </h3>
+    </ng-template>
+    <button ion-button color="danger" (click)="markasdone();">Mark As Done</button>
   </ion-card-content>
   </ion-card>
   <button full ion-button color="secondary" (click)="addImage()">Add image</button>
   <button full ion-button color="secondary" (click)="saveTodo()">Save</button>
 </ion-content>
-
-
-
-
-<!-- <ion-card>
-  <ion-card-content (click) = "changeTodoStatus(complete)">
-    {{complete}}
-  </ion-card-content>
-</ion-card> -->

@@ -9,22 +9,22 @@ import {ToastController} from "ionic-angular";
 */
 @Injectable()
 export class ToolProvider {
-
   constructor(public toastCtrl : ToastController) {
 
   }
-
+  /**
+   * Remove @ and . from a string
+   * @param {string} word
+   * @returns {string}
+   */
   removeSpecialCharacters(word :string): string {
     return word.replace('@','').replace(/\./g,'');
   }
 
-  uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
+  /**
+   * Show a Toast Message
+   * @param {string} msg
+   */
   showToast(msg: string) {
     let toast = this.toastCtrl.create({
       message: msg,
