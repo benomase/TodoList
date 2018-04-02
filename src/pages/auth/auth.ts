@@ -16,6 +16,8 @@ import { NotificationsPage } from "../notifications/notifications";
 import { ToolProvider } from "../../providers/tool/tool";
 import { Observable } from "rxjs/Observable";
 import { AngularFireList } from "angularfire2/database";
+import { AngularFireAuth } from "angularfire2/auth";
+
 
 /**
  * Generated class for the AuthPage page.
@@ -41,21 +43,16 @@ export class AuthPage {
   tempList: AngularFireList<any>;
   waitingListsIds: any;
   notificationCount: number;
- 
+
   constructor(public navCtrl: NavController,
     public todoService: TodoServiceProvider,
     public formBuilder: FormBuilder,
     public authProvider: AuthServiceProvider,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
-    public toolProvider: ToolProvider) {
-    /**
-     * TODO KEEP USER LOGGED IN
-     */
-    // this.afAuth.authState.subscribe((auth) => {
-    //  if(auth)
-    //    this.accessGranted(this.afAuth.auth.currentUser.uid);
-    // });
+    public toolProvider: ToolProvider,
+    public afAuth: AngularFireAuth, ) {
+
     this.loginForm = formBuilder.group({
       email: ['',
         Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -65,6 +62,10 @@ export class AuthPage {
 
     this.waitingTodoLists = [];
     this.waitingListsIds = [];
+    // if(!this.userID){
+    //   this.accessGranted(navParams.data.userID);
+
+    // }
   }
 
   getState() {
@@ -144,7 +145,7 @@ export class AuthPage {
       });
   }
 
-  
+
 
   accessToMyTodoList() {
     // console.log(this.user.userUuid)
@@ -154,5 +155,5 @@ export class AuthPage {
   notifications() {
     this.navCtrl.push('NotificationsPage', { userID: this.userID });
   }
-  
+
 }

@@ -1,8 +1,6 @@
 import {Component} from '@angular/core';
-import {AlertController, IonicPage, Loading, LoadingController, NavController, NavParams} from 'ionic-angular';
+import {AlertController, IonicPage, Loading, LoadingController, NavController} from 'ionic-angular';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ListsPage} from "../lists/lists";
-import * as firebase from "firebase/app";
 import {EmailValidator} from "../../validators/EmailValidator";
 import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
 

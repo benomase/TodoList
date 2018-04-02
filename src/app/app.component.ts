@@ -7,7 +7,6 @@ import { HomePage } from '../pages/home/home';
 import { AuthPage } from "../pages/auth/auth";
 import { ListsPage } from "../pages/lists/lists";
 
-import { AuthServiceProvider } from "../providers/auth-service/auth-service";
 
 @Component({
   templateUrl: 'app.html'
@@ -17,7 +16,7 @@ export class MyApp {
 
   rootPage: any = 'AuthPage';
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthServiceProvider) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
 
       // Okay, so the platform is ready and our plugins are available.
@@ -26,24 +25,8 @@ export class MyApp {
       splashScreen.hide();
     });
   }
-  /*
-  *TODO: get userid and send it in the navParam
-  */
-  goToHomePage() {
-   
-    this.nav.push('AuthPage');
-  }
-   /*
-  *TODO: get userid and send it in the navParam
-  */
-  GoToListsPage(){
-    this.nav.push('ListsPage');
-  }
-  logout() {
-    this.authProvider.logoutUser().then(() => {
-      console.log('o');
-    });
-  }
+
+  
 
 }
 

@@ -70,55 +70,46 @@ err;
   }
 //images
 addImage() {
- this.presentToast("addImage");
-  
   this.fileChooser.open().then(url => {
     (<any>window).FilePath.resolveNativePath(url, result => {
       this.nativepath = result;
-      this.presentToast(result);
-      
       this.uploadImage();
     });
   });
 }
 
 uploadImage() {
-  this.presentToast("uploadImage");
-  
   (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
     res.file(resFile => {
       var reader = new FileReader();
       reader.readAsArrayBuffer(resFile);
       reader.onloadend = (evt: any) => {
-        var imgBlob = new Blob([evt.target.result], { type: "image/jpg" });
+        var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
         var imageStore = this.firestore.ref().child(this.uuid);
         imageStore
           .put(imgBlob)
           .then(res => {
-            this.presentToast("upload sucess")
+            // this.showToast("upload sucess", "bottom");
             this.displayImage();
           })
           .catch(err => {
-            this.presentToast("Upload Failed")
             alert("Upload Failed" + err);
-            this.err=err
           });
       };
     });
   });
 }
-
 displayImage() {
-  this.presentToast("this.uuid")
   this.firestore
     .ref()
     .child(this.uuid)
     .getDownloadURL()
     .then(url => {
       this.zone.run(() => {
-        this.presentToast("image uploaded")
+        // this.showToast("Image loaded", "bottom");
         this.imgsource = url;
       });
     });
 }
+
 }

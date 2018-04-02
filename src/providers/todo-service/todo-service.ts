@@ -1,9 +1,9 @@
 
-import {HttpClient} from '@angular/common/http';
-import {AngularFireDatabase, AngularFireList} from "angularfire2/database";
-import {TodoItem, TodoList} from "../../models/model";
-import {Observable} from "rxjs/Observable";
-import {FirebaseListObservable} from "angularfire2/database-deprecated";
+import { HttpClient } from '@angular/common/http';
+import { AngularFireDatabase, AngularFireList } from "angularfire2/database";
+import { TodoItem, TodoList } from "../../models/model";
+import { Observable } from "rxjs/Observable";
+import { FirebaseListObservable } from "angularfire2/database-deprecated";
 import "firebase/app";
 import { Injectable } from "@angular/core";
 
