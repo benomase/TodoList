@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, Toolbar, ViewController} from 'ionic-angular';
 import {TodoList} from "../../models/model";
+import {AngularFireList} from "angularfire2/database";
+import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
+import {ToolProvider} from "../../providers/tool/tool";
 
 /**
  * Generated class for the ShareListPage page.
@@ -17,7 +20,18 @@ import {TodoList} from "../../models/model";
 export class ShareListPage {
 
   email: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams,public view: ViewController) {
+  sharedList: AngularFireList<any>;
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public view: ViewController,
+              public todoService:TodoServiceProvider,
+              public toolProvider: ToolProvider
+  ) {
+    this.todoService.getSharedPeopleForList(this.navParams.data.listUuid).subscribe((list) => {
+      this.sharedList = list;
+      this.sharedList.remove(toolProvider.removeSpecialCharacters(this.email));
+    });
   }
 
   ionViewDidLoad() {

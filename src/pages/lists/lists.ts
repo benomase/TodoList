@@ -41,9 +41,9 @@ export class ListsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams
     , public todoService: TodoServiceProvider, public modalCtrl: ModalController
     , public events: Events, public alertCtrl: AlertController,
-    public actionSheetCtrl: ActionSheetController,
-    public afAuth: AngularFireAuth,
-    public nfc: NFC, public ndef: Ndef
+              public actionSheetCtrl: ActionSheetController,
+              public afAuth: AngularFireAuth,
+              public nfc: NFC, public ndef: Ndef
     , public toolProvider: ToolProvider,
     private toastCtrl: ToastController,
     private speechRecognition: SpeechRecognition,
@@ -51,58 +51,51 @@ export class ListsPage {
     private barcodeScanner: BarcodeScanner,
      public authProvider: AuthServiceProvider) {
 
+
     this.afAuth.authState.subscribe((auth) => {
       if (auth) {
         console.log("auth ok");
       } else {
         console.log("auth not ok");
         this.navCtrl.setPages([
-          { page: "AuthPage" }
+          {page: "AuthPage"}
         ]);
       }
     });
 
 
-
     this.userID = navParams.data.userID;
-
 
     this.todoService.getTodoListsIds(this.userID).subscribe((listsIds: AngularFireList<any>) => {
       this.todoLists = [];
       this.listsIds = listsIds;
       for (let listId in this.listsIds) {
         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
-          this.todoLists[listId] = list;
+          if (list)
+            this.todoLists[listId] = list;
           console.log('hh' + this.todoLists)
-
         });
       }
     });
-
-
   }
+
   presentToast(message) {
     let toast = this.toastCtrl.create({
       message: message,
       duration: 3000,
       position: 'top'
     });
-
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
   }
+
   ionViewDidLoad() {
 
   }
-  selectList(list) {
 
-    this.navCtrl.push('TodosPage', { listUuid: list.uuid, userID: this.userID });
+  selectList(list) {
+    this.navCtrl.push('TodosPage', {listUuid: list.uuid, userID: this.userID, listName: list.name});
   }
 
   addList(type) {
-
-
     switch (type) {
       case "speachRecognition":
         this.startListening();
@@ -110,22 +103,23 @@ export class ListsPage {
       case "qrCode":
         this.scanQrCode();
         break;
-      default:
+      default: {
         let addModal = this.modalCtrl.create('AddListPage');
-
-
         addModal.onDidDismiss((list) => {
           if (list) {
             console.log('on dismiss add item :' + list);
-            this.todoService.addTodoList(list, this.userID);
+            this.todoService.addTodoList(list, this.userID)
+              .then((msg) => {
+                this.toolProvider.showToast(msg);
+              }).catch((msg) => {
+              this.toolProvider.showToast(msg);
+            });
           }
-
         });
 
         addModal.present();
+      }
     }
-
-
   }
 
   edit(list) {
@@ -149,8 +143,11 @@ export class ListsPage {
         {
           text: 'Modifier',
           handler: data => {
-            console.log(JSON.stringify(data));
-            this.todoService.editTodoList(list.uuid, list, this.userID);
+            this.todoService.editTodoList(list.uuid, data.newName).then((msg) => {
+              this.toolProvider.showToast(msg);
+            }).catch((msg) => {
+              this.toolProvider.showToast(msg);
+            });
           }
         }
       ]
@@ -160,17 +157,19 @@ export class ListsPage {
 
   share(list) {
     console.log('Share a TodoList');
-    let addModal = this.modalCtrl.create('ShareListPage');
+    let addModal = this.modalCtrl.create('ShareListPage', {listUuid: list.uuid});
     addModal.onDidDismiss((email) => {
-      if (list) {
-        this.todoService.shareTodoList(list.uuid, this.toolProvider.removeSpecialCharacters(email));
+      if (list && email) {
+        this.todoService.shareTodoList(list.uuid, this.toolProvider.removeSpecialCharacters(email)).then((msg) => {
+          this.toolProvider.showToast(msg);
+        }).catch((err) => {
+          this.toolProvider.showToast(err);
+        });
       }
     });
 
-
     addModal.present();
   }
-
 
   remove(list) {
     console.log('remove list');
@@ -187,7 +186,11 @@ export class ListsPage {
         {
           text: 'Confirmer',
           handler: () => {
-            this.todoService.removeTodoList(list.uuid, this.userID);
+            this.todoService.removeTodoList(list.uuid, this.userID).then((msg) => {
+              this.toolProvider.showToast(msg);
+            }).catch((msg) => {
+              this.toolProvider.showToast(msg);
+            });
           }
         }
       ]
@@ -195,7 +198,7 @@ export class ListsPage {
     confirm.present();
 
   }
-
+  
   private getPermission() {
     this.speechRecognition.hasPermission()
       .then((hasPermission: boolean) => {
@@ -209,12 +212,13 @@ export class ListsPage {
         }
       });
   }
+
   private startListening() {
     let options = {
       language: 'fr-FR'
-    }
+    };
 
-    //get permission 
+    //get permission
     this.getPermission();
     this.speechRecognition.startListening(options).subscribe(matches => {
 
@@ -241,12 +245,12 @@ export class ListsPage {
       if (resultTypeShare == "copie") {
         alert("The list are shared as a copy")
         console.log("The list are shared as a copy")
-      
+
       } else if (resultTypeShare == "access") {
-      
+
         console.log("The list are shared in read only")
         this.todoService.shareTodoList(resultListID, this.userID);
-      
+
       }
       else {
         alert()
@@ -296,8 +300,7 @@ export class ListsPage {
      this.navCtrl.push('ListsPage', { userID: this.userID });
    }
    logout() {
-     this.authProvider.logoutUser().then(() => {
-       console.log('o');
-     });
+     this.authProvider.logout();
+     //});
    }
 }

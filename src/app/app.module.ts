@@ -21,6 +21,7 @@ import { FilePath } from '@ionic-native/file-path';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { Camera } from "@ionic-native/camera";
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     FileChooser,
     FilePath,
     GooglePlus,
-    BarcodeScanner
+    BarcodeScanner,
+    Camera
   ]
 })
 export class AppModule {}

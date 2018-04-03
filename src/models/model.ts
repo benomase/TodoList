@@ -1,5 +1,7 @@
 export interface TodoList {
   uuid? : string,
+  instances?: number,
+  users?: string[],
   name : string,
   items : TodoItem[]
 }

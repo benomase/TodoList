@@ -4,20 +4,26 @@
       Share List
     </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>
+      <button ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-
+    <h3>Les personnes qui ont l'accès a cette liste sont</h3>
+    <ion-item *ngFor="let list of sharedList">
+      {{list}}
+    </ion-item>
+  </ion-list>
+  <h3>Partager la liste avec une autre personne</h3>
+  <ion-list>
     <ion-item>
       <ion-label floating>Email</ion-label>
       <ion-input type="text" [(ngModel)]="email"></ion-input>
     </ion-item>
-
   </ion-list>
-
   <button full ion-button color="secondary" (click)="share()">Partager</button>
 </ion-content>

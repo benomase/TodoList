@@ -27,7 +27,8 @@ export class NotificationsPage {
       this.todoLists = [];
       for (let listId in this.listsIds) {
         this.todoService.getTodoList(this.listsIds[listId]).subscribe((list: AngularFireList<any>) => {
-          this.todoLists[listId] = list;
+          if (list)
+            this.todoLists[listId] = list;
         });
       }
     });

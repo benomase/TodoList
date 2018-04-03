@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {
   IonicPage,
   Loading,
   LoadingController,
   NavController,
-  AlertController, Events
+  AlertController, Events, NavParams
 } from 'ionic-angular';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
@@ -18,17 +18,12 @@ import { Observable } from "rxjs/Observable";
 import { AngularFireList } from "angularfire2/database";
 import { AngularFireAuth } from "angularfire2/auth";
 
-
 /**
  * Generated class for the AuthPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-
-
-
 @IonicPage()
 @Component({
   selector: 'page-auth',
@@ -40,18 +35,25 @@ export class AuthPage {
   public loading: Loading;
   userID: string;
   waitingTodoLists: any;
-  tempList: AngularFireList<any>;
   waitingListsIds: any;
   notificationCount: number;
+  
+
+  pendingCount: string = "";
+  doneCount: string;
+  todoListsIds: any = [];
+  stats: AngularFireList<any>;
 
   constructor(public navCtrl: NavController,
-    public todoService: TodoServiceProvider,
-    public formBuilder: FormBuilder,
-    public authProvider: AuthServiceProvider,
-    public alertCtrl: AlertController,
-    public loadingCtrl: LoadingController,
-    public toolProvider: ToolProvider,
-    public afAuth: AngularFireAuth, ) {
+              public todoService: TodoServiceProvider,
+              public formBuilder: FormBuilder,
+              public authProvider: AuthServiceProvider,
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
+              public toolProvider: ToolProvider,
+              public events: Events,
+              public navParams: NavParams) {
+  
 
     this.loginForm = formBuilder.group({
       email: ['',
@@ -59,6 +61,9 @@ export class AuthPage {
       password: ['',
         Validators.compose([Validators.minLength(6), Validators.required])]
     });
+
+    if (this.navParams.data.userID)
+      this.accessGranted(this.navParams.data.userID);
 
     this.waitingTodoLists = [];
     this.waitingListsIds = [];
@@ -68,14 +73,13 @@ export class AuthPage {
     // }
   }
 
+
   getState() {
     return this.authProvider.getState();
   }
 
   ionViewDidLoad() {
   }
-
-
 
   loginUser(): void {
     if (!this.loginForm.valid) {
@@ -120,10 +124,22 @@ export class AuthPage {
       this.waitingTodoLists = [];
       this.waitingListsIds = listsIds;
     });
+
+    /*
+    this.todoService.getTodoListsIds(this.userID).subscribe((lists)=>{
+      this.todoListsIds = lists;
+    });
+
+    this.todoService.getStats(this.userID).subscribe((stats: AngularFireList<any>)=>{
+      this.toolProvider.showToast(JSON.stringify(stats));
+      this.stats = stats;
+    });
+    */
+    this.events.publish('login',this.userID);
   }
 
   logout() {
-    this.authProvider.logoutUser();
+    this.authProvider.logout();
   }
 
   goToLoginGoogle(): void {
@@ -133,8 +149,9 @@ export class AuthPage {
         console.log(result);
       }).catch((error) => {
 
-      });
+    });
   }
+
   goToLoginGoogleNative() {
     this.authProvider.loginGoogleNative().then(
       (googlePlusUser) => {
@@ -142,18 +159,16 @@ export class AuthPage {
         console.log(googlePlusUser);
       }).catch((error) => {
 
-      });
+    });
   }
-
 
 
   accessToMyTodoList() {
-    // console.log(this.user.userUuid)
-    this.navCtrl.push('ListsPage', { userID: this.userID });
+    this.navCtrl.push('ListsPage', {userID: this.userID});
   }
 
   notifications() {
-    this.navCtrl.push('NotificationsPage', { userID: this.userID });
+    this.navCtrl.push('NotificationsPage', {userID: this.userID});
   }
 
 }
