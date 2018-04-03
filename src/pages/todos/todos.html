@@ -8,7 +8,12 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
+
 <ion-content>
+    <ion-item>
+        <ion-label>Get Shared List</ion-label>
+        <ion-toggle color="danger" checked="true"></ion-toggle>
+      </ion-item>
   <ion-buttons>
     <button *ngIf="displayMethod!=='all'" color="primary" ion-button (click)="setDisplayMethod('all')" small>Display All</button>
     <button *ngIf="displayMethod!=='pending'" color="primary"  ion-button (click)="setDisplayMethod('pending')" small>Display Pendings</button>
@@ -18,40 +23,65 @@
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>
+
   <ion-list>
-    <ion-item-sliding *ngFor="let todo of todos" #item>
-      <ion-item *ngIf="displayMethod=='all' || !todo.complete">
-        <ion-card>
-          <ion-card-content>
-            <ion-card-title center>
+    <ion-item *ngFor="let todo of todos" #item>
+
+      <ion-card *ngIf="displayMethod=='all' || !todo.complete">
+        <ion-row justify-content-center>
+          <img src="assets/imgs/image.png" style="width :100px ; height : 100px;" *ngIf="!imgsDispo" (click)="uploadPhotoOptions(todo)">
+          <img src="{{imgsource}}" style="width :100px ; height : 100px;" *ngIf="imgsource && imgsDispo">
+          
+        </ion-row>
+
+        <ion-card-content>
+          <ion-row justify-content-center>
+
+            <ion-card-title justify-content-center>
               {{todo.name}}
             </ion-card-title>
-            <p>
-              Need to add some description
-            </p>
-            <div *ngIf="todo.complete; else notComplete">
-              <h3>
-                State: <span style="color: #009688">DONE</span>
-              </h3>
-            </div>
-            <ng-template #notComplete>
-              <h3>
-                State: <span style="color: #C62828">PENDING</span>
-              </h3>
-            </ng-template>
-            <ion-buttons>
-              <button *ngIf="!todo.complete;" ion-button color="danger" (click)="markasdone(todo)">Mark as Done</button>
-              <!--<button ion-button color="secondary" (click)="addImage()">Add image</button>-->
-            </ion-buttons>
-          </ion-card-content>
-        </ion-card>
-      </ion-item>
-      <ion-item-options side="left">
-        <button ion-button color="danger" (click)="deleteTodo(todo)">REMOVE</button>
-      </ion-item-options>
-      <ion-item-options side="right">
-        <button ion-button (click)="editTodo(todo)">EDIT</button>
-      </ion-item-options>
-    </ion-item-sliding>
+          </ion-row>
+
+          <ion-row justify-content-center>
+              
+            Need to add some description
+          </ion-row>
+          <ion-row justify-content-center>
+              
+          <div *ngIf="todo.complete; else notComplete">
+            <h3>
+              State: <span style="color: #009688">DONE</span>
+            </h3>
+          </div>
+          <ng-template #notComplete>
+            <h3>
+              State: <span style="color: #C62828">PENDING</span>
+            </h3>
+          </ng-template>
+          <ion-buttons>
+            <button *ngIf="!todo.complete;" ion-button color="danger" (click)="markasdone(todo)">Mark as Done</button>
+            <!-- <button ion-button color="secondary" >Add image</button> -->
+          </ion-buttons>
+        </ion-row>
+        
+        </ion-card-content>
+        <ion-row no-padding>
+          <ion-col>
+            <button ion-button clear small color="danger" icon-start (click)="deleteTodo(todo)">
+                  <ion-icon name='md-remove-circle'></ion-icon>
+                  REMOVE
+                </button>
+          </ion-col>
+          <ion-col text-center>
+            <button ion-button clear small color="danger" icon-start (click)="editTodo(todo)">
+                  <ion-icon name='md-create'></ion-icon>
+                  EDIT
+                </button>
+          </ion-col>
+
+        </ion-row>
+      </ion-card>
+    </ion-item>
+
   </ion-list>
 </ion-content>

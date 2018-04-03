@@ -6,6 +6,7 @@ import {
   NavController,
   AlertController, Events, NavParams
 } from 'ionic-angular';
+import { AngularFireAuth } from "angularfire2/auth";
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {EmailValidator} from "../../validators/EmailValidator";
@@ -35,6 +36,8 @@ export class AuthPage {
   userID: string;
   waitingTodoLists: any;
   waitingListsIds: any;
+  notificationCount: number;
+  
 
   pendingCount: string = "";
   stats: AngularFireObject<any>;
@@ -49,13 +52,8 @@ export class AuthPage {
               public toolProvider: ToolProvider,
               public events: Events,
               public navParams: NavParams) {
-    /**
-     * TODO KEEP USER LOGGED IN
-     */
-    // this.afAuth.authState.subscribe((auth) => {
-    //  if(auth)
-    //    this.accessGranted(this.afAuth.auth.currentUser.uid);
-    // });
+  
+
     this.loginForm = formBuilder.group({
       email: ['',
         Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -68,6 +66,10 @@ export class AuthPage {
 
     this.waitingTodoLists = [];
     this.waitingListsIds = [];
+    // if(!this.userID){
+    //   this.accessGranted(navParams.data.userID);
+
+    // }
   }
 
 
@@ -156,6 +158,7 @@ export class AuthPage {
 
     });
   }
+
 
   accessToMyTodoList() {
     this.navCtrl.push('ListsPage', {userID: this.userID});

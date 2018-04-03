@@ -1,21 +1,22 @@
-import {Component} from '@angular/core';
-import {Events, IonicPage, ModalController, NavController, NavParams, AlertController} from 'ionic-angular';
-import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
-import {AngularFireList} from "angularfire2/database";
-import {AddListPage} from "../add-list/add-list";
-import {TodosPage} from "../todos/todos";
-import {ActionSheetController} from 'ionic-angular';
-import {AngularFireAuth} from "angularfire2/auth";
-import {TodoList} from "../../models/model";
+import { Component } from '@angular/core';
+import { Events, IonicPage, ModalController, NavController, NavParams, AlertController } from 'ionic-angular';
+import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
+import { AngularFireList } from "angularfire2/database";
+import { AddListPage } from "../add-list/add-list";
+import { TodosPage } from "../todos/todos";
+import { ActionSheetController } from 'ionic-angular';
+import { AngularFireAuth } from "angularfire2/auth";
+import { TodoList } from "../../models/model";
 
-import {AuthPage} from "../auth/auth";
-import {NFC, Ndef} from "@ionic-native/nfc";
-import {SpeechRecognition} from '@ionic-native/speech-recognition';
-import {ChangeDetectorRef} from '@angular/core';
-import {ShareListPage} from "../share-list/share-list";
-import {ToolProvider} from "../../providers/tool/tool";
-import {ToastController} from 'ionic-angular';
-import {BarcodeScanner} from '@ionic-native/barcode-scanner';
+import { AuthPage } from "../auth/auth";
+import { NFC, Ndef } from "@ionic-native/nfc";
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { ChangeDetectorRef } from '@angular/core';
+import { ShareListPage } from "../share-list/share-list";
+import { ToolProvider } from "../../providers/tool/tool";
+import { ToastController } from 'ionic-angular';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { AuthServiceProvider } from "../../providers/auth-service/auth-service";
 
 /**
  * Generated class for the ListsPage page.
@@ -44,10 +45,12 @@ export class ListsPage {
               public afAuth: AngularFireAuth,
               public nfc: NFC, public ndef: Ndef
     , public toolProvider: ToolProvider,
-              private toastCtrl: ToastController,
-              private speechRecognition: SpeechRecognition,
-              private cd: ChangeDetectorRef,
-              private barcodeScanner: BarcodeScanner) {
+    private toastCtrl: ToastController,
+    private speechRecognition: SpeechRecognition,
+    private cd: ChangeDetectorRef,
+    private barcodeScanner: BarcodeScanner,
+     public authProvider: AuthServiceProvider) {
+
 
     this.afAuth.authState.subscribe((auth) => {
       if (auth) {
@@ -195,75 +198,7 @@ export class ListsPage {
     confirm.present();
 
   }
-
-// failNFCMsg(err) {
-//   console.log("")
-// }
-// addNFCListener(/*onSuccess, onError*/) {
-//   this.nfc.enabled()
-//     .then(() => {
-
-//       this.nfc.addNdefListener(() => {
-//         console.log('successfully attached ndef listener');
-//         this.presentToast('successfully attached ndef listener')
-//         // onSuccess;
-
-//       }, (err) => {
-//         console.log('error attaching ndef listener', err);
-//         this.presentToast('error attaching ndef listener'+ err)
-//         // onError;
-//       }).subscribe((event) => {
-//         this.presentToast('received ndef message. the tag contains: '+ this.nfc.bytesToHexString(event.tag.id))
-//         console.log('received ndef message. the tag contains: ', event.tag);
-//         console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
-
-//         let message = this.ndef.textRecord('Hello world', "fr-FR", event.tag.id);
-//         // this.nfc.share([message]).then(onSuccess).catch(onError);
-//       });
-
-//     }).catch(err => {
-//       this.failNFCMsg(err)
-//       this.nfc.showSettings();
-
-//     })
-
-// }
-
-
-// presentActionSheet() {
-//   let actionSheet = this.actionSheetCtrl.create({
-//     title: 'Add new list',
-//     buttons: [
-//       {
-//         text: 'Add',
-//         role: 'Add',
-//         handler: () => {
-//           console.log('Add clicked');
-
-// presentActionSheet() {
-//   let actionSheet = this.actionSheetCtrl.create({
-//     title: 'Add new list',
-//     buttons: [
-//       {
-//         text: 'Add',
-//         role: 'Add',
-//         handler: () => {
-//           console.log('Add clicked');
-
-//           this.addList();
-//         }
-//       }, {
-//         text: 'Add using speach recognition',
-//         handler: () => {
-//           console.log('speach recognition clicked');
-//          // this.addListWithSpeachRecognition();
-//         }
-//       }
-//     ]
-//   });
-//   actionSheet.present();
-// }
-
+  
   private getPermission() {
     this.speechRecognition.hasPermission()
       .then((hasPermission: boolean) => {
@@ -353,4 +288,19 @@ export class ListsPage {
 
 
   }
+
+  goToHomePage() {
+    
+     this.navCtrl.push('AuthPage');
+   }
+    /*
+   *TODO: get userid and send it in the navParam
+   */
+   GoToListsPage(){
+     this.navCtrl.push('ListsPage', { userID: this.userID });
+   }
+   logout() {
+     this.authProvider.logout();
+     //});
+   }
 }

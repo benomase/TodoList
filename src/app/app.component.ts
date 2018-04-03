@@ -19,6 +19,7 @@ export class MyApp {
   rootPage: any = 'AuthPage';
   userID: string;
 
+
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthServiceProvider, public events: Events, public toolProvider: ToolProvider) {
     platform.ready().then(() => {
       statusBar.styleDefault();
@@ -29,6 +30,7 @@ export class MyApp {
       this.userID = userID;
     });
   }
+
 
   goToHomePage() {
     this.nav.push('AuthPage', {userID: this.userID});

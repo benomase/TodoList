@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component,NgZone} from '@angular/core';
 import {
   AlertController, IonicPage, ModalController, NavController, NavParams, PopoverController,
   ToastController
@@ -7,6 +7,9 @@ import {AngularFireList} from "angularfire2/database";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {ToolProvider} from "../../providers/tool/tool";
 import firebase from "firebase";
+import {FileChooser} from "@ionic-native/file-chooser";
+import {FilePath} from "@ionic-native/file-path";
+import { Camera, CameraOptions } from "@ionic-native/camera";
 /**
  * Generated class for the TodosPage page.
  *
@@ -26,9 +29,15 @@ export class TodosPage {
   todos: AngularFireList<any>;
   firestore = firebase.storage();
   displayMethod: string;
-
+  nativepath: any;
+  imgsource: any;
+  imgsDispo: boolean=false;
+ 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              private fileChooser: FileChooser,
+              public zone: NgZone,
+              private camera: Camera,
               public todoService: TodoServiceProvider,
               public alertCtrl: AlertController,
               public modalCtrl: ModalController,
@@ -45,10 +54,64 @@ export class TodosPage {
     this.displayMethod='all';
   }
 
+  uploadPhotoOptions(todo) {
+    
+            const options: CameraOptions = {
+              quality: 50,
+              targetWidth: 320,
+              targetHeight: 320,
+              destinationType: this.camera.DestinationType.DATA_URL,
+              encodingType: this.camera.EncodingType.JPEG,
+              mediaType: this.camera.MediaType.PICTURE
+            };
+
+            this.imgsource = undefined;
+            this.camera.getPicture(options).then(
+              imageData => {
+                this.firestore
+                  .ref(todo.uuid)
+                  .putString(imageData, "base64", { contentType: "image/png" })
+                  .then(() => {
+                    this.firestore
+                      .ref()
+                      .child(todo.uuid)
+                      .getDownloadURL()
+                      .then(url => {
+                        this.zone.run(() => {
+                          this.imgsDispo = true;
+                          this.imgsource = url;
+                        });
+                      });
+                  });
+              },
+              err => {
+                console.log(err);
+              }
+            );
+          }
+          
+
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad TodosPage');
   }
-
+//   ngOnInit() {
+//     if (this.imgsource === undefined) {
+//       this.firestore
+//         .ref()
+//         .child(this.uuid)
+//         .getDownloadURL()
+//         .then(url => {
+//           this.zone.run(() => {
+//             this.imgsource = url;
+//             this.noImage = false;
+//           });
+//         })
+//         .catch(error => {
+//           this.imgsource = "none";
+//           this.noImage = true;
+//         });
+// }
   addTodo() {
     let addModal = this.modalCtrl.create('AddTodoPage');
     addModal.onDidDismiss((todo) => {
@@ -139,9 +202,9 @@ export class TodosPage {
     this.displayMethod = method;
   }
 
-  /*
-  addImage() {
-    this.toolProvider.showToast("addImage");
+  
+  addImage(todo) {
+    // this.toolProvider.showToast("addImage");
 
     this.fileChooser.open().then(url => {
       (<any>window).FilePath.resolveNativePath(url, result => {
@@ -154,24 +217,27 @@ export class TodosPage {
   }
 
   uploadImage(todo) {
-    this.toolProvider.showToast("uploadImage");
+    // this.toolProvider.showToast("uploadImage");
     (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
       res.file(resFile => {
         var reader = new FileReader();
+        // this.toolProvider.showToast(reader.);
         reader.readAsArrayBuffer(resFile);
         reader.onloadend = (evt: any) => {
-          var imgBlob = new Blob([evt.target.result], {type: "image/jpg"});
-          var imageStore = this.firestore.ref().child(this.todo.uuid);
+          this.toolProvider.showToast("onloadend");
+          var imgBlob = new Blob([evt.target.result], {type: "image/jpeg"});
+          var imageStore = this.firestore.ref().child(todo.uuid);
+          this.toolProvider.showToast(imageStore.toString());
           imageStore
             .put(imgBlob)
             .then(res => {
               this.toolProvider.showToast("upload sucess")
-              this.displayImage();
+              this.displayImage(todo);
             })
             .catch(err => {
-              this.toolProvider.showToast("Upload Failed")
-              alert("Upload Failed" + err);
-              this.err = err
+              this.toolProvider.showToast("Upload Failed"+err)
+              // alert("Upload Failed" + err);
+              // this.err = err
             });
         };
       });
@@ -179,10 +245,10 @@ export class TodosPage {
   }
 
   displayImage(todo) {
-    this.toolProvider.showToast("this.uuid")
+    // this.toolProvider.showToast("this.uuid")
     this.firestore
       .ref()
-      .child(this.todo.uuid)
+      .child(todo.uuid)
       .getDownloadURL()
       .then(url => {
         this.zone.run(() => {
@@ -190,6 +256,6 @@ export class TodosPage {
           this.imgsource = url;
         });
       });
-  }*/
+  }
 
 }
