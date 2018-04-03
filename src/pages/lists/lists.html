@@ -25,17 +25,14 @@
   <ion-list>
     <!-- {{todoLists | json}} -->
     <ion-item-sliding *ngFor="let list of todoLists" #item>
-      <ion-item (click)="selectList(list)">
-        <!-- <ion-label> {{list.name}}</ion-label> -->
-        <!-- <ion-checkbox color="danger" checked="true"></ion-checkbox> -->
+      <ion-item *ngIf="list" (click)="selectList(list)">
         {{list.name}}
       </ion-item>
-      <ion-item-options side="left">
+      <ion-item-options *ngIf="list" side="left">
         <button ion-button (click)="generateQrCode(list)">QrCode</button>
         <button ion-button color="danger" (click)="remove(list)">REMOVE</button>
       </ion-item-options>
-
-      <ion-item-options side="right">
+      <ion-item-options *ngIf="list" side="right">
         <button ion-button (click)="share(list)">SHARE</button>
         <button ion-button (click)="edit(list)">EDIT</button>
       </ion-item-options>

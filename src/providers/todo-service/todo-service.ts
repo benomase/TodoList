@@ -211,9 +211,9 @@ export class TodoServiceProvider {
   getSharedPeopleForList(listUuid: string) : Observable<any>{
     return this.db.list(`/lists/${listUuid}/users`).valueChanges();
   }
-  /*
+
   getStats(userID: string) : Observable<any> {
-   return this.db.list(`/stats/${userID}`).valueChanges();
+   return this.db.object(`/stats/${userID}`).valueChanges();
   }
 
 
@@ -224,5 +224,5 @@ export class TodoServiceProvider {
 
       this.db.object(`/stats/${userID}/doneTodoCount`).set(++snapshot.val().doneTodoCount);
     });
-  }*/
+  }
 }

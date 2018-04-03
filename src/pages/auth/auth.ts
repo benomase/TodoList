@@ -15,7 +15,7 @@ import {HomePage} from "../home/home";
 import {NotificationsPage} from "../notifications/notifications";
 import {ToolProvider} from "../../providers/tool/tool";
 import {Observable} from "rxjs/Observable";
-import {AngularFireList} from "angularfire2/database";
+import {AngularFireList, AngularFireObject} from "angularfire2/database";
 
 /**
  * Generated class for the AuthPage page.
@@ -37,9 +37,8 @@ export class AuthPage {
   waitingListsIds: any;
 
   pendingCount: string = "";
-  doneCount: string;
+  stats: AngularFireObject<any>;
   todoListsIds: any = [];
-  stats: AngularFireList<any>;
 
   constructor(public navCtrl: NavController,
               public todoService: TodoServiceProvider,
@@ -123,16 +122,14 @@ export class AuthPage {
       this.waitingListsIds = listsIds;
     });
 
-    /*
     this.todoService.getTodoListsIds(this.userID).subscribe((lists)=>{
       this.todoListsIds = lists;
     });
 
-    this.todoService.getStats(this.userID).subscribe((stats: AngularFireList<any>)=>{
-      this.toolProvider.showToast(JSON.stringify(stats));
+    this.todoService.getStats(this.userID).subscribe((stats: AngularFireObject<any>)=>{
       this.stats = stats;
     });
-    */
+
     this.events.publish('login',this.userID);
   }
 
