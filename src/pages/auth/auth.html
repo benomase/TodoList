@@ -23,28 +23,29 @@
       Go To My Lists
     </button>
     <h1  style="margin-top:12%" text-center>
-      Statistics
-    </h1><!--
+      Some Stats
+    </h1>
     <ion-row style="margin-top: 5%">
       <ion-col width-30>
         <h3>
-          <ion-icon name="list-box" style="zoom:4.0;"></ion-icon>
+          <ion-icon color = "primary" name="list-box" style="zoom:4.0;"></ion-icon>
         </h3>
-        <h2>{{todoListsIds.length}}</h2>
+        <h4>
+          How many TodoLists you have ?
+        </h4>
+        <h1>{{todoListsIds.length}}</h1>
       </ion-col>
       <ion-col width-30>
         <h3>
-          <ion-icon name="checkbox" style="zoom:4.0;"></ion-icon>
+          <ion-icon color = "primary" name="checkbox" style="zoom:4.0;"></ion-icon>
         </h3>
-        <h2>{{stats.doneCount}}</h2>
+        <h4>
+          How many done todos so far ?
+        </h4>
+        <h1 *ngIf="stats">{{stats.doneTodoCount}}</h1>
+        <h1 *ngIf="!stats">0</h1>
       </ion-col>
-      <ion-col width-30>
-        <h3>
-          <ion-icon name="hammer" style="zoom:4.0;"></ion-icon>
-        </h3>
-        <h2>{{pendingCount}}</h2>
-      </ion-col>
-    </ion-row>-->
+    </ion-row>
   </div>
   <ng-template #showLogin>
     <form [formGroup]="loginForm" (submit)="loginUser()" novalidate>

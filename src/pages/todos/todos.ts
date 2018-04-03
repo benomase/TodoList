@@ -196,7 +196,7 @@ export class TodosPage {
   markasdone(todo) {
     todo.complete = !todo.complete;
     this.todoService.editTodo(this.listUuid,todo);
-  //  this.todoService.incrementDoneTodoStats(this.userID);
+    this.todoService.incrementDoneTodoStats(this.userID);
   }
 
   setDisplayMethod(method) {
