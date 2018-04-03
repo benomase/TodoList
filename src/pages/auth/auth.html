@@ -1,10 +1,10 @@
 <ion-header *ngIf="getState() | async as user; else showLogin">
-  <ion-navbar color="navBar">
+  <ion-navbar color="primary">
     <ion-buttons end>
       <button ion-button icon-only icon-left (click)="notifications()">
         <ion-icon name="notifications"></ion-icon>
         <ion-label>
-          {{ waitingListsIds.length}}
+          {{ waitingListsIds.length }}
         </ion-label>
       </button>
       <button ion-button icon-only icon-left (click)="logout()">
@@ -72,12 +72,12 @@
     <ion-row>
       <ion-col col-5>
         <button ion-button  clear color="danger" (click)="goToSignup()">
-          Créer un compte /
+          Create an account /
         </button>
       </ion-col>
       <ion-col col->
         <button ion-button block clear color="danger" (click)="goToResetPassword()">
-          Mot de passe oublié?
+          Forgot password ?
         </button>
       </ion-col>
     </ion-row>

@@ -4,14 +4,14 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-center="true">
-      Taches de la liste "{{listName}}"
+      Todos of the list "{{listName}}"
     </ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <ion-buttons>
-    <button *ngIf="displayMethod!=='all'" color="danger" ion-button (click)="setDisplayMethod('all')">Display All</button>
-    <button *ngIf="displayMethod!=='pending'" color="danger" ion-button (click)="setDisplayMethod('pending')">Display Pending Only</button>
+    <button *ngIf="displayMethod!=='all'" color="primary" ion-button (click)="setDisplayMethod('all')" small>Display All</button>
+    <button *ngIf="displayMethod!=='pending'" color="primary"  ion-button (click)="setDisplayMethod('pending')" small>Display Pendings</button>
   </ion-buttons>
   <ion-fab bottom right>
     <button ion-fab (click)="addTodo()" color="secondary">

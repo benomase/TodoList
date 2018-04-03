@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-       Home
+       Home Page
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only icon-left >
@@ -11,34 +11,27 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-
 <ion-content padding >
-
       <button ion-button full outline icon-left (click)="accessToMyTodoList()">
         <ion-icon ios="ios-list" md="md-list"></ion-icon>
-        Access To My Todo List
+       View My Todolists
       </button>
-
        <ion-list>
     <ion-list-header>
        Setting
     </ion-list-header>
-
     <ion-item>
-      <ion-label>Mode Hors Ligne</ion-label>
+      <ion-label>Offline Mode</ion-label>
       <ion-toggle value="foo" checked="true"></ion-toggle>
     </ion-item>
-
      <ion-item>
       <ion-label>Get Shared List</ion-label>
       <ion-toggle color="danger" checked="true"></ion-toggle>
     </ion-item>
-
     <!-- <ion-item>
       <ion-label>Legolas</ion-label>
       <ion-toggle color="royal" checked="true"></ion-toggle>
     </ion-item> -->
-
     <!-- <ion-item>
       <ion-label>Gimli</ion-label>
       <ion-toggle color="danger"></ion-toggle>

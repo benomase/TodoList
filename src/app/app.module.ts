@@ -36,7 +36,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,
   ],
   providers: [
     StatusBar,

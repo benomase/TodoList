@@ -19,6 +19,7 @@ export class AddTodoPage {
 
 
   name: string;
+  desc: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public view: ViewController,public todoService : TodoServiceProvider) {
   }
@@ -31,6 +32,7 @@ export class AddTodoPage {
   saveTodo(){
     let todoItem : TodoItem = {
       name: this.name,
+      desc: this.desc,
       complete:false
     };
     this.view.dismiss(todoItem);
