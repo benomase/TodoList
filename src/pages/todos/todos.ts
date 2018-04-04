@@ -7,8 +7,6 @@ import { AngularFireList } from "angularfire2/database";
 import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
 import { ToolProvider } from "../../providers/tool/tool";
 import firebase from "firebase";
-import { FileChooser } from "@ionic-native/file-chooser";
-import { FilePath } from "@ionic-native/file-path";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 /**
  * Generated class for the TodosPage page.
@@ -36,7 +34,6 @@ export class TodosPage {
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    private fileChooser: FileChooser,
     public zone: NgZone,
     private camera: Camera,
     public todoService: TodoServiceProvider,
@@ -193,46 +190,46 @@ export class TodosPage {
   }
 
 
-  addImage(todo) {
-    // this.toolProvider.showToast("addImage");
+  // addImage(todo) {
+  //   // this.toolProvider.showToast("addImage");
 
-    this.fileChooser.open().then(url => {
-      (<any>window).FilePath.resolveNativePath(url, result => {
-        this.nativepath = result;
-        this.toolProvider.showToast(result);
+  //   this.fileChooser.open().then(url => {
+  //     (<any>window).FilePath.resolveNativePath(url, result => {
+  //       this.nativepath = result;
+  //       this.toolProvider.showToast(result);
 
-        this.uploadImage(todo);
-      });
-    });
-  }
+  //       this.uploadImage(todo);
+  //     });
+  //   });
+  // }
 
-  uploadImage(todo) {
-    // this.toolProvider.showToast("uploadImage");
-    (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
-      res.file(resFile => {
-        var reader = new FileReader();
-        // this.toolProvider.showToast(reader.);
-        reader.readAsArrayBuffer(resFile);
-        reader.onloadend = (evt: any) => {
-          this.toolProvider.showToast("onloadend");
-          var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
-          var imageStore = this.firestore.ref().child(todo.uuid);
-          this.toolProvider.showToast(imageStore.toString());
-          imageStore
-            .put(imgBlob)
-            .then(res => {
-              this.toolProvider.showToast("upload sucess")
-              this.displayImage(todo);
-            })
-            .catch(err => {
-              this.toolProvider.showToast("Upload Failed" + err)
-              // alert("Upload Failed" + err);
-              // this.err = err
-            });
-        };
-      });
-    });
-  }
+  // uploadImage(todo) {
+  //   // this.toolProvider.showToast("uploadImage");
+  //   (<any>window).resolveLocalFileSystemURL(this.nativepath, res => {
+  //     res.file(resFile => {
+  //       var reader = new FileReader();
+  //       // this.toolProvider.showToast(reader.);
+  //       reader.readAsArrayBuffer(resFile);
+  //       reader.onloadend = (evt: any) => {
+  //         this.toolProvider.showToast("onloadend");
+  //         var imgBlob = new Blob([evt.target.result], { type: "image/jpeg" });
+  //         var imageStore = this.firestore.ref().child(todo.uuid);
+  //         this.toolProvider.showToast(imageStore.toString());
+  //         imageStore
+  //           .put(imgBlob)
+  //           .then(res => {
+  //             this.toolProvider.showToast("upload sucess")
+  //             this.displayImage(todo);
+  //           })
+  //           .catch(err => {
+  //             this.toolProvider.showToast("Upload Failed" + err)
+  //             // alert("Upload Failed" + err);
+  //             // this.err = err
+  //           });
+  //       };
+  //     });
+  //   });
+  // }
 
   displayImage(todo) {
     // this.toolProvider.showToast("this.uuid")

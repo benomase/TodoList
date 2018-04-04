@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, Toolbar, ViewController} from 'ionic-angular';
-import {TodoList} from "../../models/model";
+import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
 import {AngularFireList} from "angularfire2/database";
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {ToolProvider} from "../../providers/tool/tool";

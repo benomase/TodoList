@@ -2,17 +2,13 @@ import { Component } from '@angular/core';
 import { Events, IonicPage, ModalController, NavController, NavParams, AlertController } from 'ionic-angular';
 import { TodoServiceProvider } from "../../providers/todo-service/todo-service";
 import { AngularFireList } from "angularfire2/database";
-import { AddListPage } from "../add-list/add-list";
-import { TodosPage } from "../todos/todos";
 import { ActionSheetController } from 'ionic-angular';
 import { AngularFireAuth } from "angularfire2/auth";
 import { TodoList } from "../../models/model";
 
-import { AuthPage } from "../auth/auth";
 import { NFC, Ndef } from "@ionic-native/nfc";
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { ChangeDetectorRef } from '@angular/core';
-import { ShareListPage } from "../share-list/share-list";
 import { ToolProvider } from "../../providers/tool/tool";
 import { ToastController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
@@ -264,7 +260,6 @@ export class ListsPage {
   }
 
   private generateQrCode(liste) {
-    let typeQr;
     let confirm = this.alertCtrl.create({
       title: 'Type de partage',
       message: 'Comment voulez vous partager cette liste?',

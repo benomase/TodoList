@@ -6,16 +6,11 @@ import {
   NavController,
   AlertController, Events, NavParams
 } from 'ionic-angular';
-import { AngularFireAuth } from "angularfire2/auth";
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 import {TodoServiceProvider} from "../../providers/todo-service/todo-service";
 import {EmailValidator} from "../../validators/EmailValidator";
 import {AuthServiceProvider} from "../../providers/auth-service/auth-service";
-import {ListsPage} from "../lists/lists";
-import {HomePage} from "../home/home";
-import {NotificationsPage} from "../notifications/notifications";
 import {ToolProvider} from "../../providers/tool/tool";
-import {Observable} from "rxjs/Observable";
 import {AngularFireList, AngularFireObject} from "angularfire2/database";
 
 /**

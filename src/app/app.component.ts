@@ -2,11 +2,6 @@ import {Component, ViewChild} from '@angular/core';
 import {Platform, Nav, Events} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-
-import {HomePage} from '../pages/home/home';
-import {AuthPage} from "../pages/auth/auth";
-import {ListsPage} from "../pages/lists/lists";
-
 import {AuthServiceProvider} from "../providers/auth-service/auth-service";
 import {ToolProvider} from "../providers/tool/tool";
 
