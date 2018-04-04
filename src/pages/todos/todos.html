@@ -11,13 +11,10 @@
 
 <ion-content>
     <ion-item>
-        <ion-label>Get Shared List</ion-label>
-        <ion-toggle color="danger" checked="true"></ion-toggle>
+        <ion-label>Display only pading list</ion-label>
+        <ion-toggle color="danger"  (ionChange)="setDisplayMethod()"></ion-toggle>
       </ion-item>
-  <ion-buttons>
-    <button *ngIf="displayMethod!=='all'" color="danger" ion-button (click)="setDisplayMethod('all')">Display All</button>
-    <button *ngIf="displayMethod!=='pending'" color="danger" ion-button (click)="setDisplayMethod('pending')">Display Pending Only</button>
-  </ion-buttons>
+  
   <ion-fab bottom right>
     <button ion-fab (click)="addTodo()" color="secondary">
       <ion-icon name="add"></ion-icon>
