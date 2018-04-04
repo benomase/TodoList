@@ -10,10 +10,11 @@
 </ion-header>
 
 <ion-content>
+    <!--
     <ion-item>
         <ion-label>Get Shared List</ion-label>
         <ion-toggle color="danger" checked="true"></ion-toggle>
-      </ion-item>
+      </ion-item>-->
   <ion-buttons>
     <button *ngIf="displayMethod!=='all'" color="primary" ion-button (click)="setDisplayMethod('all')" small>Display All</button>
     <button *ngIf="displayMethod!=='pending'" color="primary"  ion-button (click)="setDisplayMethod('pending')" small>Display Pendings</button>
@@ -31,7 +32,7 @@
         <ion-row justify-content-center>
           <img src="assets/imgs/image.png" style="width :100px ; height : 100px;" *ngIf="!imgsDispo" (click)="uploadPhotoOptions(todo)">
           <img src="{{imgsource}}" style="width :100px ; height : 100px;" *ngIf="imgsource && imgsDispo">
-          
+
         </ion-row>
 
         <ion-card-content>
@@ -43,11 +44,11 @@
           </ion-row>
 
           <ion-row justify-content-center>
-              
+
             Need to add some description
           </ion-row>
           <ion-row justify-content-center>
-              
+
           <div *ngIf="todo.complete; else notComplete">
             <h3>
               State: <span style="color: #009688">DONE</span>
@@ -63,7 +64,7 @@
             <!-- <button ion-button color="secondary" >Add image</button> -->
           </ion-buttons>
         </ion-row>
-        
+
         </ion-card-content>
         <ion-row no-padding>
           <ion-col>
