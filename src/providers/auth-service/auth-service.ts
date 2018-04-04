@@ -108,6 +108,7 @@ export class AuthServiceProvider {
           .ref('/users')
           .child(this.toolProvider.removeSpecialCharacters(googlePlusUser.email))
           .set('email', googlePlusUser.email);
+
         resolve(googlePlusUser.email);
       }
       ).catch((err) => {

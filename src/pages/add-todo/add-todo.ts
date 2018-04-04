@@ -32,7 +32,7 @@ export class AddTodoPage {
   saveTodo(){
     if(!this.desc)
       this.desc = '';
-    
+
     let todoItem : TodoItem = {
       name: this.name,
       desc: this.desc,

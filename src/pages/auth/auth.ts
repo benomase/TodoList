@@ -32,7 +32,7 @@ export class AuthPage {
   waitingTodoLists: any;
   waitingListsIds: any;
   notificationCount: number;
-  
+
 
   pendingCount: string = "";
   stats: AngularFireObject<any>;
@@ -47,7 +47,7 @@ export class AuthPage {
               public toolProvider: ToolProvider,
               public events: Events,
               public navParams: NavParams) {
-  
+
 
     this.loginForm = formBuilder.group({
       email: ['',
@@ -146,12 +146,11 @@ export class AuthPage {
 
   goToLoginGoogleNative() {
     this.authProvider.loginGoogleNative().then(
-      (googlePlusUser) => {
-        this.accessGranted(googlePlusUser.userId);
-        console.log(googlePlusUser);
+      (email) => {
+        this.accessGranted(this.toolProvider.removeSpecialCharacters(email));
       }).catch((error) => {
 
-    });
+      });
   }
 
 
