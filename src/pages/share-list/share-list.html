@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="secondary">
     <ion-title>
-      Share List
+      Sharing The List
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="close()">
@@ -10,15 +10,14 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
   <ion-list>
-    <h3>Les personnes qui ont l'accès a cette liste sont</h3>
+    <h3>This list is shared with these people</h3>
     <ion-item  *ngFor="let list of sharedList">
       {{list}}
     </ion-item>
   </ion-list>
-  <h3>Partager la liste avec une autre personne</h3>
+  <h3>Share the list with another person</h3>
   <ion-list>
     <ion-item>
       <ion-label floating>Email</ion-label>

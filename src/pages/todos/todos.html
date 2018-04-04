@@ -4,12 +4,13 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title text-center="true">
-      Taches de la liste "{{listName}}"
+      Todos of the list "{{listName}}"
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
+    
     <ion-item>
         <ion-label>Display only pading list</ion-label>
         <ion-toggle color="danger"  (ionChange)="setDisplayMethod()"></ion-toggle>
@@ -28,7 +29,7 @@
         <ion-row justify-content-center>
           <img src="assets/imgs/image.png" style="width :100px ; height : 100px;" *ngIf="!imgsDispo" (click)="uploadPhotoOptions(todo)">
           <img src="{{imgsource}}" style="width :100px ; height : 100px;" *ngIf="imgsource && imgsDispo">
-          
+
         </ion-row>
 
         <ion-card-content>
@@ -40,11 +41,11 @@
           </ion-row>
 
           <ion-row justify-content-center>
-              
+
             Need to add some description
           </ion-row>
           <ion-row justify-content-center>
-              
+
           <div *ngIf="todo.complete; else notComplete">
             <h3>
               State: <span style="color: #009688">DONE</span>
@@ -60,7 +61,7 @@
             <!-- <button ion-button color="secondary" >Add image</button> -->
           </ion-buttons>
         </ion-row>
-        
+
         </ion-card-content>
         <ion-row no-padding>
           <ion-col>

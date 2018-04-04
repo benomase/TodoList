@@ -37,7 +37,7 @@ import { Camera } from "@ionic-native/camera";
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,
   ],
   providers: [
     StatusBar,

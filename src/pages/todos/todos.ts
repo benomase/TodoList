@@ -50,7 +50,6 @@ export class TodosPage {
     this.userID = this.navParams.data.userID;
     this.listName = this.navParams.data.listName;
     this.todoService.getTodos(this.listUuid).subscribe((todos: AngularFireList<any>) => {
-
       this.todos = todos;
       console.log(todos)
     });
