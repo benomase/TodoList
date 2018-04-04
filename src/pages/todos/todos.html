@@ -8,41 +8,31 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
-
 <ion-content>
-    
-    <ion-item>
-        <ion-label>Display only pading list</ion-label>
-        <ion-toggle color="danger"  (ionChange)="setDisplayMethod()"></ion-toggle>
-      </ion-item>
-  
+<ion-item>
+    <ion-label>Pending todos only</ion-label>
+    <ion-toggle color="danger"  (ionChange)="setDisplayMethod()"></ion-toggle>
+  </ion-item>
   <ion-fab bottom right>
     <button ion-fab (click)="addTodo()" color="secondary">
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>
-
   <ion-list>
     <ion-item *ngFor="let todo of todos" #item>
-
       <ion-card *ngIf="displayMethod=='all' || !todo.complete">
         <ion-row justify-content-center>
           <img src="assets/imgs/image.png" style="width :100px ; height : 100px;" *ngIf="!imgsDispo" (click)="uploadPhotoOptions(todo)">
           <img src="{{imgsource}}" style="width :100px ; height : 100px;" *ngIf="imgsource && imgsDispo">
-
         </ion-row>
-
         <ion-card-content>
           <ion-row justify-content-center>
-
             <ion-card-title justify-content-center>
               {{todo.name}}
             </ion-card-title>
           </ion-row>
-
-          <ion-row justify-content-center>
-
-            Need to add some description
+          <ion-row justify-content-center *ngIf="todo.desc">
+           {{ todo.desc }}
           </ion-row>
           <ion-row justify-content-center>
 
